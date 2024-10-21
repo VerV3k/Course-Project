@@ -418,7 +418,7 @@ body {
 }
 
 .completed{
-    background-image: url('/icons/EllipseGreen.png');
+    background-image: url('../icons/EllipseGreen.png');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -428,7 +428,7 @@ body {
 
 
 .scheduled {
-    background-image: url('/icons/EllipseYellow.png');
+    background-image: url('../icons/EllipseYellow.png');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -436,7 +436,7 @@ body {
 }
 
 .current{
-    background-image: url('/icons/EllipseBlue.png');
+    background-image: url('../icons/EllipseBlue.png');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -446,7 +446,7 @@ body {
 
 
 .missed{
-    background-image: url('/icons/EllipseRed.png');
+    background-image: url('../icons/EllipseRed.png');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -454,7 +454,7 @@ body {
 }
 
 .replaced{
-    background-image: url('/icons/EllipsePurple.png');
+    background-image: url('../icons/EllipsePurple.png');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
