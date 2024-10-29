@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отчет прошедших дежурств</title>
+    <link rel="stylesheet" href="../style/reset.css">
+    <link rel="stylesheet" href="../style/normalize.css">
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/radiusGraf.js" defer></script>
+</head>
+
+<body>
+    <section class="main-page__dute">
+        <div class="main-page__dute-wrapper">
+            <header class="dute__header">
+                <div class="main-page__logo-blockh">
+                    <img src="../icons/Logowithbgc.png" alt="Logo">
+                    <div class="logo-block">
+                        <span class="header__logo-text">Маркетинг Плюс</span>
+                        <span class="header__logo-text-mini">служба безопасности</span>
+                    </div>
+                </div>
+
+                <div class="link-block">
+                    <li><a href="duty.html" class="link ">График</a></li>
+                    <li><a href="pastdutyreport.html" class="link active">Отчет прошедших дежурств</a></li>
+                </div>
+                <div class="log-out-button__block"><button class="log-out-button font-bold-white"><img
+                            src="../icons/exit.svg" alt="выход ">Александр Ц.</button></div>
+
+            </header>
+            <section class="main-block">
+                <aside class="dute__aside">
+                    <div class="dute__aside-block font-regular-white">
+                        <div class="notifications-block">
+                            <div class="notice-block">
+                                <span><img src="../icons/notice.svg" alt="оповещение"></span>
+                                <span>Уведомления</span>
+                                <span class="arrow-und"><img src="../icons/ArrowBottom.png" alt=""></span>
+                            </div>
+                            <div class="notifications">
+                                <span>Добавлено дежурство на 14 октября </span>
+                                <span>Добавлено дежурство на 13 октября </span>
+                            </div>
+                        </div>
+                        <div class="discription-block">
+                            <span><img src="../icons/discription.png" alt="запись"></span>
+                            <span>Добавить запись</span>
+                        </div>
+                    </div>
+                </aside>
+                <main class="main">
+                    <div class="graf-block">
+                        <div class="main-history__duty font-regular">
+
+                            <div class=""><img src="../icons/calendar.png" alt="календарь"></div>
+                            <div class="short-state">
+                                <div class="short-state__text"><span>Краткая сводка за</span><span> сентябрь 2024</span>
+                                </div>
+                                <span><img src="../icons/Arrowundblack.png" alt=""></span>
+                            </div>
+                        </div>
+                        <div class="open-graf">
+
+                            <div class="open-graf__align-items font-regular-white">
+                                <div class="open-graf__align-span">
+                                    <span><img src="../icons/EllipseGreen.png" alt=""
+                                            style="width: 22px;height: 22px;"></span> <span>- Число выполненых
+                                        дежурств</span>
+                                </div>
+                                <div class="open-graf__align-span">
+                                    <span><img src="../icons/EllipseRed.png" alt=""
+                                            style="width: 22px;height: 22px;"></span> <span>- Число пропущенных дежурств
+                                    </span>
+                                </div>
+                                <div class="open-graf__align-span">
+                                    <span><img src="../icons/EllipsePurple.png" alt=""
+                                            style="width: 22px;height: 22px;"></span> <span>- Число замененных
+                                        дежурств</span>
+                                </div>
+                            </div>
+
+                            <div class="chart">
+                                <div>
+                                    <canvas class="myPieChart" width="232" height="232"></canvas>
+                                </div>
+                                <div class="font-regular-white"><span>Сентябрь </span><span>- 2024</span></div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="past">
+                            <div class="past-block">
+                                <div class="past-block__history font-regular">
+                                    <div><span>Дежурство: </span><span>1 сентября</span></div>
+                                    <div><span>Время дежурства: </span><span>8:00 - 20:00</span></div>
+                                    <div><span>Статус: </span><span>Выполнено</span></div>
+                                </div>
+                                <div class="button-open">
+                                    <button class="past-block__history-button font-bold-white close">Подробности
+                                        дежурств</button>
+                                </div>
+                            </div>
+                            <div class="discription ">
+                                <div class="discription-text font-regular-white">
+                                    <span>Записи: </span><span>дежурство прошло без инцидентов</span>
+
+                                </div>
+                                <div class="discription-button__block">
+                                    <button class="discription-button font-bold">Свернуть</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="past">
+                        <div class="past-block">
+                            <div class="past-block__history font-regular">
+                                <div><span>Дежурство: </span><span>1 сентября</span></div>
+                                <div><span>Время дежурства: </span><span>8:00 - 20:00</span></div>
+                                <div><span>Статус: </span><span>Выполнено</span></div>
+                            </div>
+                            <div class="button-open">
+                                <button class="past-block__history-button font-bold-white">Подробности
+                                    дежурств</button>
+                            </div>
+                        </div>
+                        <div class="discription close">
+                            <div class="discription-text font-regular-white">
+                                <span>Записи: </span><span>дежурство прошло без инцидентов</span>
+
+                            </div>
+                            <div class="discription-button__block">
+                                <button class="discription-button font-bold">Свернуть</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="past font-regular">
+                        <div class="past-block">
+                            <div class="past-block__history">
+                                <div><span>Дежурство: </span><span>1 сентября</span></div>
+                                <div><span>Время дежурства: </span><span>8:00 - 20:00</span></div>
+                                <div><span>Статус: </span><span>Выполнено</span></div>
+                            </div>
+                            <div class="button-open">
+                                <button class="past-block__history-button font-bold-white">Подробности
+                                    дежурств</button>
+                            </div>
+                        </div>
+                        <div class="discription close">
+                            <div class="discription-text font-regular-white">
+                                <span>Записи: </span><span>дежурство прошло без инцидентов</span>
+                            </div>
+                            <div class="discription-button__block">
+                                <button class="discription-button font-bold">Свернуть</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="nav-number font-regular"> <span
+                            class="active ">1</span><span>2</span><span>3</span><span>4</span>
+                    </div>
+        </div>
+        </div>
+        </main>
+    </section>
+    <footer class="dute__footer">
+        <div class="main-page__logo-blockh">
+            <img src="../icons/Logowithbgc.png" alt="Logo">
+            <div class="logo-block">
+                <span class="header__logo-text">Маркетинг Плюс</span>
+                <span class="header__logo-text-mini">служба безопасности</span>
+            </div>
+        </div>
+        <div>
+            <li><a href="" class="link">Вопрос руководству</a>
+        </div>
+        </div>
+    </footer>
+    </div>
+    </section>
+</body>
+
+</html>
