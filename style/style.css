@@ -873,7 +873,7 @@ body {
 
 @media (max-width: 1397px) {
     .main {
-        padding-left: 5vw;
+        padding-left: 10vw;
 
     }
 
@@ -899,7 +899,7 @@ body {
 
 @media (max-width: 1200px) {
     .main {
-        padding-left: 5%;
+        padding-left: 8%;
     }
 
     .second-header__block {
@@ -1193,7 +1193,7 @@ body {
         padding-top: 130px;
         /* margin-top: 180px; */
         padding-left: 35px;
-        width: 93%;
+        width: 91%;
     }
 
     .calendar-block {
