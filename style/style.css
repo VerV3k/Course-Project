@@ -110,7 +110,7 @@ body {
     margin: 0;
     display: flex;
     justify-content: center;
-    margin-top: 150px;
+    margin-top: 50px;
     align-items: center;
 }
 
@@ -183,6 +183,13 @@ body {
 }
 
 .log-in__input {
+    width: 256px;
+    height: 40px;
+    border-radius: 8px;
+    border: none;
+}
+
+.password__input {
     width: 256px;
     height: 40px;
     border-radius: 8px;
@@ -654,6 +661,113 @@ body {
     padding-right: 40px;
 }
 
+.user-form-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #ADBFC3;
+    padding: 20px;
+    left: 32%;
+    top: 24%;
+    position: absolute;
+    width: 689px;
+    /* height: 456px; */
+    margin-bottom: 26px;
+    border-radius: 2px;
+}
+
+.cross {
+    margin: 0 auto;
+    margin-right: 3%;
+}
+
+.owerflow {
+    display: none;
+    width: 1920px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.owerflow-edit {
+    display: none;
+    width: 1920px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.error-message {
+    color: #7f2020;
+}
+
+.input-error {
+    border: 2px solid #7f2020;/
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    /* gap: 16px; */
+
+}
+
+.input-container input {
+    height: 49px;
+    width: 294px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px rgba(34, 60, 80, 0.2);
+    margin-bottom: 16px;
+}
+
+.input-container select {
+    height: 51px;
+    width: 298px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px rgba(34, 60, 80, 0.2);
+    margin-bottom: 16px;
+}
+
+.input-container label {
+    margin-bottom: 10px;
+}
+
+.add-user-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding-top: 26px;
+}
+
+.add-user-form {
+    display: flex;
+    flex-direction: row;
+    /* background-color: #ADBFC3; */
+    gap: 20px;
+}
+
+.add-button-ac {
+    width: 264px;
+    height: 47px;
+    border-radius: 13px;
+    border: none;
+    background-color: #3A5664;
+    box-shadow: 0px 0px 10px 0px rgba(34, 60, 80, 0.2);
+    /* margin-right: 23px; */
+    margin: 0 auto;
+    margin-left: 30px;
+    margin-top: 36px;
+}
+
+.position-text {
+    margin: 0 auto;
+}
+
 .main-table {
     display: flex;
     flex-direction: column;
@@ -663,6 +777,7 @@ body {
     align-items: end;
     margin-bottom: 34px;
 }
+
 
 .search {
     display: flex;
@@ -732,15 +847,12 @@ body {
     border: none;
     background-color: #3A5664;
     box-shadow: 0px 0px 10px 0px rgba(34, 60, 80, 0.2);
-
-
-
     margin-right: 23px;
     margin-top: 100px;
 }
 
 .table-container {
-    max-height: 500px;
+    max-height: 700px;
     /* Установите желаемую высоту */
     overflow: auto;
     /* Включает прокрутку */
@@ -1241,7 +1353,7 @@ body {
         padding-left: 10px;
         padding-right: 10px;
     }
-   
+
 
     .notifications {
         padding-left: 0;
@@ -1287,6 +1399,7 @@ body {
         height: auto;
         margin-top: 0;
     }
+
     .main-history__duty,
     .open-graf,
     .past-block,
@@ -1325,6 +1438,7 @@ body {
     .calendar {
         width: 352px;
     }
+
     .main-history__duty,
     .open-graf,
     .past-block,
@@ -1334,7 +1448,8 @@ body {
         padding-left: 10px;
         padding-right: 10px;
     }
-    .short-state{
+
+    .short-state {
         gap: none;
     }
 }

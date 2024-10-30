@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="style/reset.css">
     <link rel="stylesheet" href="style/normalize.css">
     <link rel="stylesheet" href="style/style.css">
-
+    <script defer src="js/script.js"></script>
 </head>
 
 <body class="log">
@@ -31,14 +31,14 @@
             </div>
             <div class="log-in__form">
                 <span class="log-in__span font_medium">Вход в систему</span>
-                <form action="">
+                <form action="" id="form-sign-in">
                     <label for="" class="log-in__label font_medium">Имя пользователя:
-                        <input type="text" class="log-in__input">
+                        <input type="text" class="log-in__input" name="login">
                     </label>
                     <label for="" class="log-in__label font_medium">Пароль:
-                        <input type="text" class="log-in__input">
+                        <input type="password" class="password__input" name="password">
                     </label>
-                    <a href="pages/duty.html"><button type="button" class="log-in_button font-bold-white">Войти</button></a>
+                    <a href="pages/duty.html"><button type="submit" class="log-in_button font-bold-white">Войти</button></a>
                 </form>
             </div>
         </div>
