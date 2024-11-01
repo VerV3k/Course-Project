@@ -25,6 +25,14 @@ body {
     font-style: normal;
 }
 
+.font-regular-menu {
+    color: #3A5664;
+    font-family: "Inter", sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    font-style: normal;
+}
+
 .font_medium {
     font-family: "Inter", sans-serif;
     font-size: 20px;
@@ -246,6 +254,7 @@ body {
     gap: 6px;
     align-items: center;
     margin-right: 60px;
+    cursor: pointer;
 }
 
 .log-out-button__block {
@@ -675,10 +684,69 @@ body {
     border-radius: 2px;
 }
 
+.exit-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #ADBFC3;
+    padding: 20px;
+    left: 43%;
+    top: 24%;
+    position: absolute;
+    width: 330px;
+    border-radius: 5px;
+    gap: 20px;
+}
+
+.button-exit-container {
+    display: flex;
+    /* gap: 10px; */
+    justify-content: space-around;
+    margin-top: 20px;
+    
+}
+
+.button-exit-container button {
+    width: 120px;
+    height: 47px;
+    border-radius: 13px;
+    border: none;
+    background-color: #3A5664;
+    box-shadow: 0px 0px 10px 0px rgba(34, 60, 80, 0.2);
+    cursor: pointer;
+    margin: 0 auto;
+}
+
+.button-exit-container button:first-of-type {
+    /* width: 84px;
+    height: 47px;
+    border-radius: 13px; */
+    /* border: none; */
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px 0px rgba(34, 60, 80, 0.2);
+    color: #3A5664;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
 .cross {
     margin: 0 auto;
     margin-right: 3%;
+    cursor: pointer;
 }
+
+.cross-exit {
+    margin: 0 auto;
+    margin-right: 3%;
+    cursor: pointer;
+}
+
+.exit-completed{
+    margin: 0 auto;
+    margin-right: 3%;
+    cursor: pointer;
+}
+
+
 
 .owerflow {
     display: none;
@@ -690,8 +758,8 @@ body {
     background-color: rgba(0, 0, 0, 0.6);
 }
 
-.owerflow-edit {
-    display: none;
+.owerflow-exit {
+    display: block;
     width: 1920px;
     height: 100vh;
     position: fixed;
@@ -702,6 +770,13 @@ body {
 
 .error-message {
     color: #7f2020;
+}
+
+.error-message-log{
+    margin-top: -30px;
+    color: #7f2020;
+    width: 250px;
+    padding-bottom: 20px;
 }
 
 .input-error {
@@ -762,6 +837,7 @@ body {
     margin: 0 auto;
     margin-left: 30px;
     margin-top: 36px;
+    cursor: pointer;
 }
 
 .position-text {
@@ -778,6 +854,35 @@ body {
     margin-bottom: 34px;
 }
 
+
+.owerflow-complitede {
+    display: none;
+    width: 1920px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.completed-wrapper {
+    display: flex;
+    flex-direction: column;
+    background-color: #ADBFC3;
+    padding: 12px;
+    left: 43%;
+    top: 34%;
+    position: absolute;
+    width: 308px;
+    border-radius: 5px;
+    gap: 5px;
+    padding-bottom: 20px;
+    padding-left: 32px;
+}
+.completed-chek{
+    display: flex;
+    align-items: center;
+}
 
 .search {
     display: flex;
@@ -831,7 +936,11 @@ body {
 .table-section__tr-th {
     background-color: #4A606E;
     height: 63px;
+
 }
+
+
+
 
 .table-section__tr td {
     text-align: center;
@@ -849,15 +958,16 @@ body {
     box-shadow: 0px 0px 10px 0px rgba(34, 60, 80, 0.2);
     margin-right: 23px;
     margin-top: 100px;
+    cursor: pointer;
 }
 
 .table-container {
     max-height: 700px;
-    /* Установите желаемую высоту */
+
     overflow: auto;
-    /* Включает прокрутку */
+
     border: 1px solid #ccc;
-    /* Добавить границу (по желанию) */
+
 }
 
 .search-report {
@@ -1323,6 +1433,7 @@ body {
 
     .log-out-button {
         margin-right: 0;
+        cursor: pointer;
     }
 
     .log-out-button__block {

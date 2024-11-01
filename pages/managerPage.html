@@ -27,9 +27,22 @@
                         <li><a href="" class="link active">Пользователи</a></li>
                         <li><a href="manageDutyReport.html" class="link">Отчет дежурств</a></li>
                     </div>
-                    <div class="log-out-button__block"><button class="log-out-button font-bold-white"><img
-                                src="../icons/exit.svg" alt="выход ">Виталий Г.</button></div>
+                    <div class="log-out-button__block"><button class="log-out-button font-bold-white">
+                            <img src="../icons/exit.svg" alt="выход ">Виталий Г.</button>
+                    </div>
                 </div>
+
+                <!-- <div class="owerflow-exit font-regular">
+                    <div class="exit-container">
+                        <span class="cross-exit"><img src="../icons/krest.svg" alt="cross"></span>
+                        <span class="exit-text">Вы действительно хотите выйти?</span>
+                        <div class="button-exit-container font-regular-white">
+                            <button class="exit-cancellation font-regular-white">Отмена</button>
+                            <button class="exit-completed font-regular-white">Выйти</button>
+                        </div>
+                    </div>
+                </div> -->
+
             </header>
             <section class="main-block">
                 <aside class="dute__aside">
@@ -63,14 +76,24 @@
                                     <th class="main-cms-th">Логин</th>
                                     <th class="main-cms-th">Пароль</th>
                                     <th class="main-cms-th">Телефон</th>
-                                    <th></th> 
-                                    <th></th> 
+                                    <th></th> <!-- Для кнопки редактирования -->
+                                    <th></th> <!-- Для кнопки удаления -->
                                 </tr>
                             </thead>
                             <tbody class="table-position">
-                            
+                                <!-- Динамически добавляемые строки будут здесь -->
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="owerflow-complitede">
+                        <div class="completed-wrapper font-regular-menu">
+                            <span class="exit-completed"><img src="../icons/krest.svg" alt="cross"></span>
+                            <div class="completed-chek">
+                                <span>Пользователь добавлен</span>
+                                <span><img src="../icons/checkbox.svg" alt=""></span>
+                            </div>
+                        </div>
                     </div>
 
                     <div>
@@ -84,15 +107,15 @@
                                 <div class="input-container">
                                     <label for="firstName">Имя:</label>
                                     <input type="text" id="firstName" name="firstName" required>
-                                    <span class="error-message" id="firstNameError"></span>
+                                    <span class="error-message" id="firstNameError"></span> <!-- Элемент для ошибки -->
 
                                     <label for="lastName">Фамилия:</label>
                                     <input type="text" id="lastName" name="lastName" required>
-                                    <span class="error-message" id="lastNameError"></span> 
+                                    <span class="error-message" id="lastNameError"></span> <!-- Элемент для ошибки -->
 
                                     <label for="phone">Телефон:</label>
                                     <input type="tel" id="phone" name="phone">
-                                    <span class="error-message" id="phoneError"></span>
+                                    <span class="error-message" id="phoneError"></span> <!-- Элемент для ошибки -->
                                 </div>
 
                                 <div class="input-container">
@@ -105,11 +128,11 @@
 
                                     <label for="login">Логин:</label>
                                     <input type="text" id="login" name="login" required>
-                                    <span class="error-message" id="loginError"></span> 
+                                    <span class="error-message" id="loginError"></span> <!-- Элемент для ошибки -->
 
                                     <label for="password">Пароль:</label>
                                     <input type="password" id="password" name="password" required>
-                                    <span class="error-message" id="passwordError"></span> 
+                                    <span class="error-message" id="passwordError"></span> <!-- Элемент для ошибки -->
 
                                     <button type="submit" class="add-button-ac font-bold-white">Добавить
                                         пользователя</button>

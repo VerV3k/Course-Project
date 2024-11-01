@@ -32,13 +32,15 @@
             <div class="log-in__form">
                 <span class="log-in__span font_medium">Вход в систему</span>
                 <form action="" id="form-sign-in">
-                    <label for="" class="log-in__label font_medium">Имя пользователя:
-                        <input type="text" class="log-in__input" name="login">
+                    <label class="log-in__label font_medium">Имя пользователя:
+                        <input type="text" class="log-in__input" name="login" id="login">
                     </label>
-                    <label for="" class="log-in__label font_medium">Пароль:
-                        <input type="password" class="password__input" name="password">
-                    </label>
-                    <a href="pages/duty.html"><button type="submit" class="log-in_button font-bold-white">Войти</button></a>
+                    <label class="log-in__label font_medium">Пароль:
+                        <input type="password" class="password__input" name="password" id="password">
+                    </label><div class="error-message-log font-regular"></div>
+
+                    <button type="submit" class="log-in_button font-bold-white">Войти</button>
+
                 </form>
             </div>
         </div>

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../style/reset.css">
     <link rel="stylesheet" href="../style/normalize.css">
     <link rel="stylesheet" href="../style/style.css">
+    <script defer src="../js/script.js"></script>
 </head>
 
 <body>
@@ -49,12 +50,12 @@
                 <main class="main-table">
                     <div class="search">
                         <input type="text" placeholder="Поиск пользователя">
-                        <button><img src="../icons/search.svg" alt=""></button>
+                        <button class="btn-search"><img src="../icons/search.svg" alt=""></button>
                     </div>
                     <div class="table-container">
                         <table class="main-cms">
 
-                            <tbody class="table-position">
+                            <thead>
                                 <tr class="table-section__tr-th">
                                     <th class="main-cms-th">ID</th>
                                     <th class="main-cms-th">Имя</th>
@@ -69,164 +70,67 @@
                                     <th class=""> </th>
                                     <th class=""> </th>
                                 </tr>
+                            </thead>
 
-
+                            <tbody class="table-position">
+                                <!-- Динамически добавляемые строки будут здесь -->
                             </tbody>
-                            <tr class="table-section__tr font-regular">
-                                <td class=".table-section__tr-td-name">
-                                    19</td>
-                                <td class="">
-                                    Виталий
-                                </td>
-                                <td class="">
-                                    Галенко</td>
-                                <td class="">Главный Администратор
-                                </td>
-                                <td class="">1234@mail.ru
-                                </td>
-                                <td class="">1234
-                                </td>
-                                <td class="">+7 (986) 546 76 56
-                                </td>
-
-                            </tr>
-
-                            <tr class="table-section__tr font-regular">
-                                <td class=".table-section__tr-td-name">
-                                    20</td>
-                                <td class="">
-                                    Владислав
-                                </td>
-                                <td class="">
-                                    Шувалов</td>
-                                <td class="">Администратор
-                                </td>
-                                <td class="">4321@mail.ru
-                                </td>
-                                <td class="">4321
-                                </td>
-                                <td class="">+7 (997) 960 76 55
-                                </td>
-                                <td class=""><img src="../icons/edit.svg" alt="изменение" class="">
-                                </td>
-                                <td class=""><img src="../icons/delete.svg" alt="удаление" class="">
-                                </td>
-                            </tr>
-
-                            <tr class="table-section__tr font-regular">
-                                <td class=".table-section__tr-td-name">
-                                    21</td>
-                                <td class="">
-                                    Александр
-                                </td>
-                                <td class="">
-                                    Цой</td>
-                                <td class="">Сотрудник
-                                </td>
-                                <td class="">1111@mail.ru
-                                </td>
-                                <td class="">1111
-                                </td>
-                                <td class="">+7 (888) 368 23 63
-                                </td>
-                                <td class=""><img src="../icons/edit.svg" alt="изменение" class="">
-                                </td>
-                                <td class=""><img src="../icons/delete.svg" alt="удаление" class="">
-                                </td>
-                            </tr>
-                            <tr class="table-section__tr font-regular">
-                                <td class=".table-section__tr-td-name">
-                                    20</td>
-                                <td class="">
-                                    Владислав
-                                </td>
-                                <td class="">
-                                    Шувалов</td>
-                                <td class="">Администратор
-                                </td>
-                                <td class="">4321@mail.ru
-                                </td>
-                                <td class="">4321
-                                </td>
-                                <td class="">+7 (997) 960 76 55
-                                </td>
-                                <td class=""><img src="../icons/edit.svg" alt="изменение" class="">
-                                </td>
-                                <td class=""><img src="../icons/delete.svg" alt="удаление" class="">
-                                </td>
-                            </tr>
-
-                            <tr class="table-section__tr font-regular">
-                                <td class=".table-section__tr-td-name">
-                                    21</td>
-                                <td class="">
-                                    Александр
-                                </td>
-                                <td class="">
-                                    Цой</td>
-                                <td class="">Сотрудник
-                                </td>
-                                <td class="">1111@mail.ru
-                                </td>
-                                <td class="">1111
-                                </td>
-                                <td class="">+7 (888) 368 23 63
-                                </td>
-                                <td class=""><img src="../icons/edit.svg" alt="изменение" class="">
-                                </td>
-                                <td class=""><img src="../icons/delete.svg" alt="удаление" class="">
-                                </td>
-
-                            </tr>
-                            <tr class="table-section__tr font-regular">
-                                <td class=".table-section__tr-td-name">
-                                    20</td>
-                                <td class="">
-                                    Владислав
-                                </td>
-                                <td class="">
-                                    Шувалов</td>
-                                <td class="">Администратор
-                                </td>
-                                <td class="">4321@mail.ru
-                                </td>
-                                <td class="">4321
-                                </td>
-                                <td class="">+7 (997) 960 76 55
-                                </td>
-                                <td class=""><img src="../icons/edit.svg" alt="изменение" class="">
-                                </td>
-                                <td class=""><img src="../icons/delete.svg" alt="удаление" class="">
-                                </td>
-                            </tr>
-
-                            <tr class="table-section__tr font-regular">
-                                <td class=".table-section__tr-td-name">
-                                    21</td>
-                                <td class="">
-                                    Александр
-                                </td>
-                                <td class="">
-                                    Цой</td>
-                                <td class="">Сотрудник
-                                </td>
-                                <td class="">1111@mail.ru
-                                </td>
-                                <td class="">1111
-                                </td>
-                                <td class="">+7 (888) 368 23 63
-                                </td>
-                                <td class=""><img src="../icons/edit.svg" alt="изменение" class="">
-                                </td>
-                                <td class=""><img src="../icons/delete.svg" alt="удаление" class="">
-                                </td>
-                            </tr>
-
                         </table>
+                    </div>
+
+                    <div class="owerflow-complitede">
+                        <div class="completed-wrapper font-regular-menu">
+                            <span class="exit-completed"><img src="../icons/krest.svg" alt="cross"></span>
+                            <div class="completed-chek">
+                                <span>Пользователь добавлен</span>
+                                <span><img src="../icons/checkbox.svg" alt=""></span>
+                            </div>
+                        </div>
                     </div>
 
                     <div>
                         <button class="add-button font-bold-white">Добавить пользователя</button>
+                    </div>
+                    <div class="owerflow">
+                        <div class="user-form-container">
+                            <span class="cross"><img src="../icons/krest.svg" alt="cross"></span>
+                            <span class="font-medium-24px position-text">Добавить пользователя</span>
+                            <form class="add-user-form font-bold">
+                                <div class="input-container">
+                                    <label for="firstName">Имя:</label>
+                                    <input type="text" id="firstName" name="firstName" required>
+                                    <span class="error-message" id="firstNameError"></span> <!-- Элемент для ошибки -->
+
+                                    <label for="lastName">Фамилия:</label>
+                                    <input type="text" id="lastName" name="lastName" required>
+                                    <span class="error-message" id="lastNameError"></span> <!-- Элемент для ошибки -->
+
+                                    <label for="phone">Телефон:</label>
+                                    <input type="tel" id="phone" name="phone">
+                                    <span class="error-message" id="phoneError"></span> <!-- Элемент для ошибки -->
+                                </div>
+
+                                <div class="input-container">
+                                    <label for="role">Роль:</label>
+                                    <select id="role" name="role" required>
+                                        <option value="Администратор">Администратор</option>
+                                        <option value="Главный администратор">Главный Администратор</option>
+                                        <option value="Сотрудник">Сотрудник</option>
+                                    </select>
+
+                                    <label for="login">Логин:</label>
+                                    <input type="text" id="login" name="login" required>
+                                    <span class="error-message" id="loginError"></span> <!-- Элемент для ошибки -->
+
+                                    <label for="password">Пароль:</label>
+                                    <input type="password" id="password" name="password" required>
+                                    <span class="error-message" id="passwordError"></span> <!-- Элемент для ошибки -->
+
+                                    <button type="submit" class="add-button-ac font-bold-white">Добавить
+                                        пользователя</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </main>
             </section>

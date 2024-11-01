@@ -4,13 +4,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeButton = document.querySelector(".cross");
   const form = document.querySelector(".add-user-form");
   const tableBody = document.querySelector(".table-position");
+  const searchInput = document.querySelector(".search input[type='text']");
+  const searchButton = document.querySelector(".btn-search");
+  const notificationContainer = document.querySelector(".owerflow-complitede"); // Контейнер для уведомления
 
+  const notificationText = notificationContainer.querySelector(
+    ".completed-chek span"
+  );
+  const exitCompletedButton =
+    notificationContainer.querySelector(".exit-completed");
+  let message;
   let editMode = false;
   let currentUserId;
 
-  const getStoredUsers = () => {
-    return JSON.parse(localStorage.getItem("users")) || [];
-  };
+  const getStoredUsers = () => JSON.parse(localStorage.getItem("users")) || [];
 
   const generateUniqueId = (storedUsers) => {
     let id;
@@ -44,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
       overflowContainer.style.display = "none";
       clearErrors();
       editMode = false;
+      А;
     });
   }
 
@@ -52,12 +60,13 @@ document.addEventListener("DOMContentLoaded", () => {
       event.preventDefault();
       clearErrors();
 
-      const firstName = document.getElementById("firstName").value.trim();
-      const lastName = document.getElementById("lastName").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const role = document.getElementById("role").value.trim();
-      const login = document.getElementById("login").value.trim();
-      const password = document.getElementById("password").value.trim();
+      
+      const firstName = document.querySelector("#firstName").value.trim();
+      const lastName = document.querySelector("#lastName").value.trim();
+      const phone = document.querySelector("#phone").value.trim();
+      const role = document.querySelector("#role").value.trim();
+      const login = document.querySelector("#login").value.trim();
+      const password = document.querySelector("#password").value.trim();
 
       const storedUsers = getStoredUsers();
 
@@ -66,32 +75,37 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (!login || /\s/.test(login)) {
-        showError(
-          "loginError",
-          "Логин не может быть пустым и не должен содержать пробелов."
-        );
-        return;
-      }
-
-      if (!firstName || /\s/.test(firstName)) {
+      if (!/^[а-яА-ЯёЁ]+$/.test(firstName)) {
         showError(
           "firstNameError",
-          "Имя не может быть пустым и не должно содержать пробелов."
+          "Имя должно содержать только русские буквы."
         );
         return;
       }
 
-      if (!lastName || /\s/.test(lastName)) {
+      if (!/^[а-яА-ЯёЁ]+$/.test(lastName)) {
         showError(
           "lastNameError",
-          "Фамилия не может быть пустой и не должна содержать пробелов."
+          "Фамилия должна содержать только русские буквы."
         );
         return;
       }
 
-      if (!phone || phone.length < 17) {
-        showError("phoneError", "Пожалуйста, введите полный номер телефона.");
+      
+      const validationResult = validateLoginAndPassword(login, password);
+      if (!validationResult.isValid) {
+        showError(
+          validationResult.errorElementId,
+          validationResult.errorMessage
+        );
+        return;
+      }
+
+      if (!phone || phone.length < 18) {
+        showError(
+          "phoneError",
+          "Пожалуйста, введите полный номер телефона (должен быть не менее 18 символов)."
+        );
         return;
       }
 
@@ -114,6 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
           password,
         };
         saveUpdatedUserData(updatedUserData);
+        message = "Пользователь изменён";
+        displayNotification(message);
       } else {
         const userId = generateUniqueId(storedUsers);
         const userData = {
@@ -127,6 +143,8 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         saveUserData(userData);
         addToTable(userData);
+        message = "Пользователь добавлен";
+        displayNotification(message);
       }
 
       overflowContainer.style.display = "none";
@@ -147,23 +165,24 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     localStorage.setItem("users", JSON.stringify(storedUsers));
     populateTable();
-    overflowContainer.style.display = "none";
-    form.reset();
+    overflowContainer.style.display = "none"; 
+    form.reset(); 
   };
+
 
   const addToTable = (userData) => {
     const newRow = `
-            <tr class="table-section__tr font-regular" data-id="${userData.id}">
-                <td>${userData.id}</td>
-                <td>${userData.firstName}</td>
-                <td>${userData.lastName}</td>
-                <td>${userData.role}</td>
-                <td>${userData.login}</td>
-                <td>${userData.password}</td>
-                <td>${userData.phone}</td>
-                <td><img src="../icons/edit.svg" alt="" class="edit-button"></td>
-                <td><img src="../icons/delete.svg" alt="" class="delete-button"></td>
-            </tr>`;
+        <tr class="table-section__tr font-regular" data-id="${userData.id}">
+            <td>${userData.id}</td>
+            <td>${userData.firstName}</td>
+            <td>${userData.lastName}</td>
+            <td>${userData.role}</td>
+            <td>${userData.login}</td>
+            <td>${userData.password}</td>
+            <td>${userData.phone}</td>
+            <td><img src="../icons/edit.svg" alt="изменение" class="edit-button"></td>
+            <td><img src="../icons/delete.svg" alt="удаление" class="delete-button"></td>
+        </tr>`;
 
     tableBody.insertAdjacentHTML("beforeend", newRow);
 
@@ -182,11 +201,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const deleteUser = (id) => {
     let storedUsers = getStoredUsers();
-
     storedUsers = storedUsers.filter((user) => user.id !== id);
-
     localStorage.setItem("users", JSON.stringify(storedUsers));
-
     populateTable();
   };
 
@@ -197,22 +213,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const storedUsers = getStoredUsers();
     const userToEdit = storedUsers.find((user) => user.id === userId);
 
-    document.getElementById("firstName").value = userToEdit.firstName;
-    document.getElementById("lastName").value = userToEdit.lastName;
-    document.getElementById("phone").value = userToEdit.phone;
-    document.getElementById("role").value = userToEdit.role;
-    document.getElementById("login").value = userToEdit.login;
+    document.querySelector("#firstName").value = userToEdit.firstName;
+    document.querySelector("#lastName").value = userToEdit.lastName;
+    document.querySelector("#phone").value = userToEdit.phone;
+    document.querySelector("#role").value = userToEdit.role;
+    document.querySelector("#login").value = userToEdit.login;
 
     overflowContainer.style.display = "block";
-
     document.querySelector(".position-text").textContent =
       "Редактировать пользователя";
-
     document.querySelector(".add-button-ac").textContent =
       "Сохранить изменения";
   };
 
-  // Функция для маски номера телефона
+  // Функция для маскировки номера телефона
   const maskPhoneInput = (event) => {
     const input = event.target;
     const value = input.value.replace(/\D/g, "");
@@ -230,52 +244,204 @@ document.addEventListener("DOMContentLoaded", () => {
     input.value = formattedValue;
   };
 
-  document.getElementById("phone").addEventListener("input", maskPhoneInput);
+  document.querySelector("#phone").addEventListener("input", maskPhoneInput);
 
   populateTable();
 
   const showError = (elementId, message) => {
-    const errorElement = document.getElementById(elementId);
+    const errorElement = document.querySelector(`#${elementId}`);
     errorElement.textContent = message;
   };
 
   const clearErrors = () => {
-    document.getElementById("firstNameError").textContent = "";
-    document.getElementById("lastNameError").textContent = "";
-    document.getElementById("phoneError").textContent = "";
-    document.getElementById("loginError").textContent = "";
-    document.getElementById("passwordError").textContent = "";
+    document.querySelector("#firstNameError").textContent = "";
+    document.querySelector("#lastNameError").textContent = "";
+    document.querySelector("#phoneError").textContent = "";
+    document.querySelector("#loginError").textContent = "";
+    document.querySelector("#passwordError").textContent = "";
   };
 
-  const allowOnlyLetters = (event) => {
-    event.target.value = event.target.value.replace(/[^а-яА-ЯёЁa-zA-Z]/g, "");
+  const removeSpaces = function (event) {
+    this.value = this.value.replace(/\s+/g, "");
   };
 
-  document
-    .getElementById("firstName")
-    .addEventListener("input", allowOnlyLetters);
-  document
-    .getElementById("lastName")
-    .addEventListener("input", allowOnlyLetters);
+  document.querySelector("#firstName").addEventListener("input", removeSpaces);
+  document.querySelector("#lastName").addEventListener("input", removeSpaces);
+  document.querySelector("#login").addEventListener("input", removeSpaces);
+  document.querySelector("#password").addEventListener("input", removeSpaces);
 
-  // Функция для поиска пользователей по имени и фамилии
-  const searchUsers = () => {
-    const searchInput = document.querySelector(".search input[type=text]");
-    const query = searchInput.value.toLowerCase();
-    const rows = tableBody.querySelectorAll("tr");
+  const allowOnlyRussianLetters = function (event) {
+    this.value = this.value.replace(/[^а-яА-ЯёЁ]/g, "");
+  };
 
-    rows.forEach((row) => {
-      const firstName = row.cells[1].textContent.toLowerCase();
-      const lastName = row.cells[2].textContent.toLowerCase();
+  const allowOnlyRussianLettersLastName = function (event) {
+    this.value = this.value.replace(/[^а-яА-ЯёЁ]/g, "");
+  };
 
-      if (firstName.includes(query) || lastName.includes(query)) {
+  const validateLoginAndPassword = (login, password) => {
+    if (/^[а-яА-ЯёЁ]*$/.test(login)) {
+      return {
+        isValid: false,
+        errorElementId: "loginError",
+        errorMessage: "Логин не должен содержать русские буквы.",
+      };
+    }
+    if (/^[а-яА-ЯёЁ]*$/.test(password)) {
+      return {
+        isValid: false,
+        errorElementId: "passwordError",
+        errorMessage: "Пароль не должен содержать русские буквы.",
+      };
+    }
+    return { isValid: true };
+  };
+
+  searchButton.addEventListener("click", () => {
+    const queryString = searchInput.value.toLowerCase(); 
+    const rows = tableBody.getElementsByTagName("tr");
+
+    Array.from(rows).forEach((row) => {
+      const firstNameCellText = row.cells[1]
+        ? row.cells[1].textContent.toLowerCase()
+        : "";
+      const lastNameCellText = row.cells[2]
+        ? row.cells[2].textContent.toLowerCase()
+        : ""; 
+
+      if (
+        firstNameCellText.includes(queryString) ||
+        lastNameCellText.includes(queryString)
+      ) {
         row.style.display = "";
       } else {
-        row.style.display = "none";
+        row.style.display = "none"; 
       }
     });
-  };
+  });
 
-  const searchButton = document.querySelector(".btn-search");
-  searchButton.addEventListener("click", searchUsers);
+  document
+    .querySelector("#firstName")
+    .addEventListener("input", allowOnlyRussianLetters);
+  document
+    .querySelector("#lastName")
+    .addEventListener("input", allowOnlyRussianLettersLastName);
+
+  const displayNotification = (message) => {
+    notificationText.textContent = message; 
+    notificationContainer.style.display = "block"; 
+
+    setTimeout(() => {
+      notificationContainer.style.display = "none"; 
+    }, 3000);
+
+    exitCompletedButton.onclick = () => {
+      notificationContainer.style.display = "none"; 
+    };
+  };
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const allowedPages = [
+    "/pages/administrator.html",
+    "/pages/administratorEdit.html",
+    "/pages/duty.html",
+    "/pages/pastdutyreport.html",
+    "/pages/managerPage.html",
+    "/pages/manageDutyReport.html",
+  ];
+
+  if (allowedPages.includes(window.location.pathname)) {
+    const logOutButton = document.querySelector(".log-out-button");
+
+    const createExitMenu = () => {
+      const exitMenu = document.createElement("div");
+      exitMenu.className = "owerflow-exit font-regular";
+
+      exitMenu.innerHTML = `
+          <div class="exit-container">
+              <span class="cross-exit"><img src="../icons/krest.svg" alt="cross"></span>
+              <span class="exit-text">Вы действительно хотите выйти?</span>
+              <div class="button-exit-container font-regular-white">
+                  <button class="exit-cancellation font-regular-white">Отмена</button>
+                  <button class="exit-completed font-regular-white">Выйти</button>
+              </div>
+          </div>
+      `;
+
+      const closeButton = exitMenu.querySelector(".cross-exit");
+      const cancelButton = exitMenu.querySelector(".exit-cancellation");
+      const completeButton = exitMenu.querySelector(".exit-completed");
+
+      closeButton.addEventListener("click", () => {
+        exitMenu.remove();
+      });
+
+      cancelButton.addEventListener("click", () => {
+        exitMenu.remove();
+      });
+
+      completeButton.addEventListener("click", () => {
+        window.location.href = "../index.html"; // Перенаправление на вход
+      });
+
+      return exitMenu;
+    };
+
+    logOutButton.addEventListener("click", () => {
+      const header = document.querySelector(".dute__header");
+      const exitMenu = createExitMenu();
+      header.appendChild(exitMenu);
+    });
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (window.location.pathname !== "index.html") {
+    return;
+  }
+
+  const form = document.querySelector("#form-sign-in");
+  const errorMessageElement = document.querySelector(".error-message-log"); // Элемент для вывода ошибок
+
+  if (form) {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (errorMessageElement) {
+        errorMessageElement.textContent = "";
+      }
+
+      const loginInput = document.querySelector("#login").value.trim();
+      const passwordInput = document.querySelector("#password").value.trim();
+
+      const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+      const user = storedUsers.find(
+        (user) => user.login === loginInput && user.password === passwordInput
+      );
+
+      if (user) {
+        switch (user.role) {
+          case "Администратор":
+            window.location.href = "pages/administrator.html";
+            break;
+          case "Главный администратор":
+            window.location.href = "pages/managerPage.html";
+            break;
+          case "Сотрудник":
+            window.location.href = "pages/duty.html";
+            break;
+          default:
+        }
+      } else {
+        if (storedUsers.length === 0) {
+          window.location.href = "pages/managerPage.html";
+        } else {
+          if (errorMessageElement) {
+            errorMessageElement.textContent =
+              "Неправильное имя пользователя или пароль";
+          }
+        }
+      }
+    });
+  }
 });
