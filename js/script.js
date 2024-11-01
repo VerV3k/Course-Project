@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const currentPage = window.location.pathname;
+  if (
+    currentPage !== "/pages/administrator.html" &&
+    currentPage !== "/pages/managerPage.html"
+  ) {
+    return;
+  }
+
   const addButton = document.querySelector(".add-button");
   const overflowContainer = document.querySelector(".owerflow");
   const closeButton = document.querySelector(".cross");
@@ -6,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const tableBody = document.querySelector(".table-position");
   const searchInput = document.querySelector(".search input[type='text']");
   const searchButton = document.querySelector(".btn-search");
-  const notificationContainer = document.querySelector(".owerflow-complitede");
+  const notificationContainer = document.querySelector(".owerflow-complitede"); // Container for notifications
   const notificationText = notificationContainer.querySelector(
     ".completed-chek span"
   );
@@ -50,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
       overflowContainer.style.display = "none";
       clearErrors();
       editMode = false;
-      А;
     });
   }
 
@@ -59,7 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
       event.preventDefault();
       clearErrors();
 
-      
       const firstName = document.querySelector("#firstName").value.trim();
       const lastName = document.querySelector("#lastName").value.trim();
       const phone = document.querySelector("#phone").value.trim();
@@ -90,7 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      
       const validationResult = validateLoginAndPassword(login, password);
       if (!validationResult.isValid) {
         showError(
@@ -164,24 +169,23 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     localStorage.setItem("users", JSON.stringify(storedUsers));
     populateTable();
-    overflowContainer.style.display = "none"; 
-    form.reset(); 
+    overflowContainer.style.display = "none";
+    form.reset();
   };
-
 
   const addToTable = (userData) => {
     const newRow = `
-        <tr class="table-section__tr font-regular" data-id="${userData.id}">
-            <td>${userData.id}</td>
-            <td>${userData.firstName}</td>
-            <td>${userData.lastName}</td>
-            <td>${userData.role}</td>
-            <td>${userData.login}</td>
-            <td>${userData.password}</td>
-            <td>${userData.phone}</td>
-            <td><img src="../icons/edit.svg" alt="изменение" class="edit-button"></td>
-            <td><img src="../icons/delete.svg" alt="удаление" class="delete-button"></td>
-        </tr>`;
+         <tr class="table-section__tr font-regular" data-id="${userData.id}">
+             <td>${userData.id}</td>
+             <td>${userData.firstName}</td>
+             <td>${userData.lastName}</td>
+             <td>${userData.role}</td>
+             <td>${userData.login}</td>
+             <td>${userData.password}</td>
+             <td>${userData.phone}</td>
+             <td><img src="../icons/edit.svg" alt="изменение" class="edit-button"></td>
+             <td><img src="../icons/delete.svg" alt="удаление" class="delete-button"></td>
+         </tr>`;
 
     tableBody.insertAdjacentHTML("beforeend", newRow);
 
@@ -225,7 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
       "Сохранить изменения";
   };
 
-  // Функция для маскировки номера телефона
   const maskPhoneInput = (event) => {
     const input = event.target;
     const value = input.value.replace(/\D/g, "");
@@ -269,11 +272,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#login").addEventListener("input", removeSpaces);
   document.querySelector("#password").addEventListener("input", removeSpaces);
 
-  const allowOnlyRussianLetters = function (event) {
+  const allowOnlyRussianLettersInFirstName = function (event) {
     this.value = this.value.replace(/[^а-яА-ЯёЁ]/g, "");
   };
 
-  const allowOnlyRussianLettersLastName = function (event) {
+  const allowOnlyRussianLettersInLastName = function (event) {
     this.value = this.value.replace(/[^а-яА-ЯёЁ]/g, "");
   };
 
@@ -296,7 +299,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   searchButton.addEventListener("click", () => {
-    const queryString = searchInput.value.toLowerCase(); 
+    const queryString = searchInput.value.toLowerCase();
     const rows = tableBody.getElementsByTagName("tr");
 
     Array.from(rows).forEach((row) => {
@@ -305,7 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
         : "";
       const lastNameCellText = row.cells[2]
         ? row.cells[2].textContent.toLowerCase()
-        : ""; 
+        : "";
 
       if (
         firstNameCellText.includes(queryString) ||
@@ -313,28 +316,28 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         row.style.display = "";
       } else {
-        row.style.display = "none"; 
+        row.style.display = "none";
       }
     });
   });
 
   document
     .querySelector("#firstName")
-    .addEventListener("input", allowOnlyRussianLetters);
+    .addEventListener("input", allowOnlyRussianLettersInFirstName);
   document
     .querySelector("#lastName")
-    .addEventListener("input", allowOnlyRussianLettersLastName);
+    .addEventListener("input", allowOnlyRussianLettersInLastName);
 
   const displayNotification = (message) => {
-    notificationText.textContent = message; 
-    notificationContainer.style.display = "block"; 
+    notificationText.textContent = message;
+    notificationContainer.style.display = "block";
 
     setTimeout(() => {
-      notificationContainer.style.display = "none"; 
+      notificationContainer.style.display = "none";
     }, 3000);
 
     exitCompletedButton.onclick = () => {
-      notificationContainer.style.display = "none"; 
+      notificationContainer.style.display = "none";
     };
   };
 });
@@ -380,7 +383,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       completeButton.addEventListener("click", () => {
-        window.location.href = "../index.html"; 
+        window.location.href = "../index.html";
       });
 
       return exitMenu;
@@ -395,12 +398,12 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (window.location.pathname !== "index.html") {
-    return;
-  }
+  // if (window.location.pathname !== "index.html") {
+  //   return;
+  // }
 
   const form = document.querySelector("#form-sign-in");
-  const errorMessageElement = document.querySelector(".error-message-log"); 
+  const errorMessageElement = document.querySelector(".error-message-log"); // Элемент для вывода ошибок
 
   if (form) {
     form.addEventListener("submit", (event) => {
