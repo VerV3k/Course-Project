@@ -6,8 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const tableBody = document.querySelector(".table-position");
   const searchInput = document.querySelector(".search input[type='text']");
   const searchButton = document.querySelector(".btn-search");
-  const notificationContainer = document.querySelector(".owerflow-complitede"); // Контейнер для уведомления
-
+  const notificationContainer = document.querySelector(".owerflow-complitede");
   const notificationText = notificationContainer.querySelector(
     ".completed-chek span"
   );
@@ -381,7 +380,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       completeButton.addEventListener("click", () => {
-        window.location.href = "../index.html"; // Перенаправление на вход
+        window.location.href = "../index.html"; 
       });
 
       return exitMenu;
@@ -401,7 +400,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const form = document.querySelector("#form-sign-in");
-  const errorMessageElement = document.querySelector(".error-message-log"); // Элемент для вывода ошибок
+  const errorMessageElement = document.querySelector(".error-message-log"); 
 
   if (form) {
     form.addEventListener("submit", (event) => {
