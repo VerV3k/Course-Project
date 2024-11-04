@@ -165,7 +165,6 @@ document.addEventListener("DOMContentLoaded", () => {
     form.reset();
   };
 
-  // Изменения здесь: добавляем проверку на роль
   const addToTable = (userData) => {
     const newRow = `<tr class="table-section__tr font-regular" data-id="${
       userData.id
@@ -187,12 +186,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     tableBody.insertAdjacentHTML("beforeend", newRow);
 
-    // Добавляем обработчики для кнопок удаления и редактирования только если это не главный администратор
     if (userData.role !== "Главный администратор") {
       tableBody
         .querySelector(`tr[data-id="${userData.id}"] .delete-button`)
         .addEventListener("click", () => {
-          // Код для удаления пользователя
           handleDeleteUser(userData.id);
         });
 
@@ -206,66 +203,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Функция для удаления пользователя
   const handleDeleteUser = (id) => {
-    // Логика удаления пользователя
-    // Например: показываем меню подтверждения удаления
     deleteUser(id);
-    populateTable(); // Обновляем таблицу после удаления
+    populateTable();
   };
-  const currentUser = JSON.parse(localStorage.getItem("currentUser")); // Получаем текущего пользователя
-  const roleSelect = document.querySelector("#role"); // Получаем селектор ролей
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const roleSelect = document.querySelector("#role");
 
-  // Проверяем, является ли текущий пользователь обычным администратором
   if (currentUser && currentUser.role === "Администратор") {
-    // Удаляем опцию главного администратора из селектора
     const adminOption = Array.from(roleSelect.options).find(
       (option) => option.value === "Главный администратор"
     );
     if (adminOption) {
-      roleSelect.removeChild(adminOption); // Удаляем опцию
+      roleSelect.removeChild(adminOption);
     }
   }
   const deleteUser = (id) => {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser")); // Получаем текущего пользователя
-    const storedUsers = getStoredUsers(); // Получаем всех пользователей
-    const userToDelete = storedUsers.find((user) => user.id === id); // Находим пользователя, которого хотим удалить
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const storedUsers = getStoredUsers();
+    const userToDelete = storedUsers.find((user) => user.id === id);
 
-    // Проверяем, является ли текущий пользователь главным администратором и пытается ли он удалить главного администратора
     if (
       currentUser.role !== "Главный администратор" &&
       userToDelete.role === "Главный администратор"
     ) {
       alert("Вы не имеете права удалять главного администратора.");
-      return; // Прекращаем выполнение функции
+      return;
     }
 
-    let updatedUsers = storedUsers.filter((user) => user.id !== id); // Удаляем пользователя из списка
-    localStorage.setItem("users", JSON.stringify(updatedUsers)); // Сохраняем обновленный список пользователей
-    populateTable(); // Обновляем таблицу
+    let updatedUsers = storedUsers.filter((user) => user.id !== id);
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+    populateTable();
   };
 
   const editUser = (userId) => {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser")); // Получаем текущего пользователя
-    const storedUsers = getStoredUsers(); // Получаем всех пользователей
-    const userToEdit = storedUsers.find((user) => user.id === userId); // Находим пользователя, которого хотим редактировать
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const storedUsers = getStoredUsers();
+    const userToEdit = storedUsers.find((user) => user.id === userId);
 
-    // Проверяем, является ли текущий пользователь главным администратором и пытается ли он редактировать главного администратора
     if (
       currentUser.role !== "Главный администратор" &&
       userToEdit.role === "Главный администратор"
     ) {
       alert("Вы не имеете права редактировать главного администратора.");
-      return; // Прекращаем выполнение функции
+      return;
     }
 
-    editMode = true; // Устанавливаем режим редактирования
-    currentUserId = userId; // Сохраняем ID текущего пользователя для редактирования
-    document.querySelector("#firstName").value = userToEdit.firstName; // Заполняем форму данными пользователя
+    editMode = true;
+    currentUserId = userId;
+    document.querySelector("#firstName").value = userToEdit.firstName;
     document.querySelector("#lastName").value = userToEdit.lastName;
     document.querySelector("#phone").value = userToEdit.phone;
     document.querySelector("#role").value = userToEdit.role;
     document.querySelector("#login").value = userToEdit.login;
 
-    overflowContainer.style.display = "block"; // Показываем форму редактирования
+    overflowContainer.style.display = "block";
     document.querySelector(".position-text").textContent =
       "Редактировать пользователя";
     document.querySelector(".add-button-ac").textContent =
@@ -306,7 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#passwordError").textContent = "";
   };
   const removeSpaces = (event) => {
-    event.target.value = event.target.value.replace(/\s+/g, ""); // Используем event.target для доступа к элементу
+    event.target.value = event.target.value.replace(/\s+/g, "");
   };
 
   document.querySelector("#firstName").addEventListener("input", removeSpaces);
@@ -316,21 +307,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const forma = document.querySelector(".add-user-form");
 
-  // Функция для преобразования первой буквы в заглавную
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
-  // Обработчик события для имени
   const allowOnlyRussianLettersInFirstName = (event) => {
-    let value = event.target.value.replace(/[^а-яА-ЯёЁ]/g, ""); // Разрешаем только русские буквы
-    event.target.value = capitalizeFirstLetter(value); // Преобразуем первую букву в заглавную
+    let value = event.target.value.replace(/[^а-яА-ЯёЁ]/g, "");
+    event.target.value = capitalizeFirstLetter(value);
   };
 
-  // Обработчик события для фамилии
   const allowOnlyRussianLettersInLastName = (event) => {
-    let value = event.target.value.replace(/[^а-яА-ЯёЁ]/g, ""); // Разрешаем только русские буквы
-    event.target.value = capitalizeFirstLetter(value); // Преобразуем первую букву в заглавную
+    let value = event.target.value.replace(/[^а-яА-ЯёЁ]/g, "");
+    event.target.value = capitalizeFirstLetter(value);
   };
 
   if (forma) {
@@ -450,21 +438,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("DOMContentLoaded", () => {
   const logOutButton = document.querySelector(".log-out-button");
-  const userNameSpan = logOutButton.querySelector(".user-name"); // Элемент для отображения имени пользователя
+  const userNameSpan = logOutButton.querySelector(".user-name");
 
-  // Проверка на наличие текущего пользователя
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   if (currentUser && userNameSpan) {
-    // Обновляем текст кнопки с именем и первой буквой фамилии пользователя
     userNameSpan.textContent = `${
       currentUser.firstName
-    } ${currentUser.lastName.charAt(0)}.`; // Отображаем только первую букву фамилии
+    } ${currentUser.lastName.charAt(0)}.`;
   }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("#form-sign-in");
-  const errorMessageElement = document.querySelector(".error-message-log"); // Элемент для вывода ошибок
+  const errorMessageElement = document.querySelector(".error-message-log");
 
   if (form) {
     form.addEventListener("submit", (event) => {
@@ -483,10 +469,8 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       if (user) {
-        // Сохраняем текущего пользователя в локальном хранилище
         localStorage.setItem("currentUser", JSON.stringify(user));
 
-        // Перенаправление на соответствующую страницу
         switch (user.role) {
           case "Администратор":
             window.location.href = "pages/administrator.html";
@@ -514,15 +498,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Радиальный график
-// Шаг 2: Создание диаграммы
 const ctx = document.querySelector(".myPieChart").getContext("2d");
-let data = [13, 1, 2]; // Начальные данные
+let data = [13, 1, 2];
 
-// Создаем радиальный градиент
 const createGradient = (color) => {
-  const gradient = ctx.createRadialGradient(100, 100, 0, 110, 120, 90); // Радиальный градиент
-  gradient.addColorStop(0, "rgba(128, 128, 128, 0.5)"); // Центр (серый)
-  gradient.addColorStop(1, color); // Конечный цвет
+  const gradient = ctx.createRadialGradient(100, 100, 0, 110, 120, 90);
+  gradient.addColorStop(0, "rgba(128, 128, 128, 0.5)");
+  gradient.addColorStop(1, color);
   return gradient;
 };
 
@@ -539,17 +521,17 @@ const myPieChart = new Chart(ctx, {
         label: "Мои данные",
         data: data,
         backgroundColor: [
-          createGradient("#77C375"), // Градиент для первого сектора
-          createGradient("#BB4141"), // Градиент для второго сектора
-          createGradient("#D05AFF"), // Градиент для третьего сектора
+          createGradient("#77C375"),
+          createGradient("#BB4141"),
+          createGradient("#D05AFF"),
         ],
-        borderWidth: 0, // Убираем границы
+        borderWidth: 0,
       },
     ],
   },
   options: {
     responsive: true,
-    cutout: "50%", // Устанавливаем пустой центр
+    cutout: "50%",
     plugins: {
       legend: {
         display: false,
@@ -559,10 +541,8 @@ const myPieChart = new Chart(ctx, {
   },
 });
 
-// Шаг 3: Функция для обновления данных
 function updateData() {
-  // Генерация новых данных
-  data = data.map((value) => Math.floor(Math.random() * 100)); // Случайные значения от 0 до 99
-  myPieChart.data.datasets[0].data = data; // Обновление данных в диаграмме
-  myPieChart.update(); // Обновление отображения диаграммы
+  data = data.map((value) => Math.floor(Math.random() * 100));
+  myPieChart.data.datasets[0].data = data;
+  myPieChart.update();
 }
