@@ -242,7 +242,7 @@ body {
 }
 
 .log-out-button {
-    width: 193px;
+    max-width: 250px;
     height: 47px;
     border-radius: 13px;
     border: none;
@@ -684,6 +684,50 @@ body {
     border-radius: 2px;
 }
 
+.del-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #ADBFC3;
+    padding: 20px;
+    left: 43%;
+    top: 24%;
+    position: absolute;
+    width: 330px;
+    border-radius: 5px;
+    gap: 20px;
+}
+
+.button-del-container {
+    display: flex;
+    /* gap: 10px; */
+    justify-content: space-around;
+    margin-top: 20px;
+    
+}
+
+.button-del-container button {
+    width: 120px;
+    height: 47px;
+    border-radius: 13px;
+    border: none;
+    background-color: #3A5664;
+    box-shadow: 0px 0px 10px 0px rgba(34, 60, 80, 0.2);
+    cursor: pointer;
+    margin: 0 auto;
+}
+
+.button-del-container button:first-of-type {
+    /* width: 84px;
+    height: 47px;
+    border-radius: 13px; */
+    /* border: none; */
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px 0px rgba(34, 60, 80, 0.2);
+    color: #3A5664;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
 .exit-container {
     display: flex;
     flex-direction: column;
@@ -729,6 +773,12 @@ body {
 }
 
 .cross {
+    margin: 0 auto;
+    margin-right: 3%;
+    cursor: pointer;
+}
+
+.cross-del {
     margin: 0 auto;
     margin-right: 3%;
     cursor: pointer;

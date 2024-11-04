@@ -1,12 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const currentPage = window.location.pathname;
-  if (
-    currentPage !== "/pages/administrator.html" &&
-    currentPage !== "/pages/managerPage.html"
-  ) {
-    return;
-  }
-
   const addButton = document.querySelector(".add-button");
   const overflowContainer = document.querySelector(".owerflow");
   const closeButton = document.querySelector(".cross");
@@ -20,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   const exitCompletedButton =
     notificationContainer.querySelector(".exit-completed");
+
   let message;
   let editMode = false;
   let currentUserId;
@@ -65,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       clearErrors();
-
       const firstName = document.querySelector("#firstName").value.trim();
       const lastName = document.querySelector("#lastName").value.trim();
       const phone = document.querySelector("#phone").value.trim();
@@ -173,56 +165,107 @@ document.addEventListener("DOMContentLoaded", () => {
     form.reset();
   };
 
+  // Изменения здесь: добавляем проверку на роль
   const addToTable = (userData) => {
-    const newRow = `
-         <tr class="table-section__tr font-regular" data-id="${userData.id}">
-             <td>${userData.id}</td>
-             <td>${userData.firstName}</td>
-             <td>${userData.lastName}</td>
-             <td>${userData.role}</td>
-             <td>${userData.login}</td>
-             <td>${userData.password}</td>
-             <td>${userData.phone}</td>
-             <td><img src="../icons/edit.svg" alt="изменение" class="edit-button"></td>
-             <td><img src="../icons/delete.svg" alt="удаление" class="delete-button"></td>
-         </tr>`;
+    const newRow = `<tr class="table-section__tr font-regular" data-id="${
+      userData.id
+    }">
+            <td>${userData.id}</td>
+            <td>${userData.firstName}</td>
+            <td>${userData.lastName}</td>
+            <td>${userData.role}</td>
+            <td>${userData.login}</td>
+            <td>${userData.password}</td>
+            <td>${userData.phone}</td>
+            ${
+              userData.role !== "Главный администратор"
+                ? `<td><img src="../icons/edit.svg" alt="изменение" class="edit-button"></td>
+                <td><img src="../icons/delete.svg" alt="удаление" class="delete-button"></td>`
+                : `<td></td><td></td>`
+            }
+        </tr>`;
 
     tableBody.insertAdjacentHTML("beforeend", newRow);
 
-    tableBody
-      .querySelector(`tr[data-id="${userData.id}"] .delete-button`)
-      .addEventListener("click", () => {
-        deleteUser(userData.id);
-      });
+    // Добавляем обработчики для кнопок удаления и редактирования только если это не главный администратор
+    if (userData.role !== "Главный администратор") {
+      tableBody
+        .querySelector(`tr[data-id="${userData.id}"] .delete-button`)
+        .addEventListener("click", () => {
+          // Код для удаления пользователя
+          handleDeleteUser(userData.id);
+        });
 
-    tableBody
-      .querySelector(`tr[data-id="${userData.id}"] .edit-button`)
-      .addEventListener("click", () => {
-        editUser(userData.id);
-      });
+      tableBody
+        .querySelector(`tr[data-id="${userData.id}"] .edit-button`)
+        .addEventListener("click", () => {
+          editUser(userData.id);
+        });
+    }
   };
 
+  // Функция для удаления пользователя
+  const handleDeleteUser = (id) => {
+    // Логика удаления пользователя
+    // Например: показываем меню подтверждения удаления
+    deleteUser(id);
+    populateTable(); // Обновляем таблицу после удаления
+  };
+  const currentUser = JSON.parse(localStorage.getItem("currentUser")); // Получаем текущего пользователя
+  const roleSelect = document.querySelector("#role"); // Получаем селектор ролей
+
+  // Проверяем, является ли текущий пользователь обычным администратором
+  if (currentUser && currentUser.role === "Администратор") {
+    // Удаляем опцию главного администратора из селектора
+    const adminOption = Array.from(roleSelect.options).find(
+      (option) => option.value === "Главный администратор"
+    );
+    if (adminOption) {
+      roleSelect.removeChild(adminOption); // Удаляем опцию
+    }
+  }
   const deleteUser = (id) => {
-    let storedUsers = getStoredUsers();
-    storedUsers = storedUsers.filter((user) => user.id !== id);
-    localStorage.setItem("users", JSON.stringify(storedUsers));
-    populateTable();
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")); // Получаем текущего пользователя
+    const storedUsers = getStoredUsers(); // Получаем всех пользователей
+    const userToDelete = storedUsers.find((user) => user.id === id); // Находим пользователя, которого хотим удалить
+
+    // Проверяем, является ли текущий пользователь главным администратором и пытается ли он удалить главного администратора
+    if (
+      currentUser.role !== "Главный администратор" &&
+      userToDelete.role === "Главный администратор"
+    ) {
+      alert("Вы не имеете права удалять главного администратора.");
+      return; // Прекращаем выполнение функции
+    }
+
+    let updatedUsers = storedUsers.filter((user) => user.id !== id); // Удаляем пользователя из списка
+    localStorage.setItem("users", JSON.stringify(updatedUsers)); // Сохраняем обновленный список пользователей
+    populateTable(); // Обновляем таблицу
   };
 
   const editUser = (userId) => {
-    editMode = true;
-    currentUserId = userId;
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")); // Получаем текущего пользователя
+    const storedUsers = getStoredUsers(); // Получаем всех пользователей
+    const userToEdit = storedUsers.find((user) => user.id === userId); // Находим пользователя, которого хотим редактировать
 
-    const storedUsers = getStoredUsers();
-    const userToEdit = storedUsers.find((user) => user.id === userId);
+    // Проверяем, является ли текущий пользователь главным администратором и пытается ли он редактировать главного администратора
+    if (
+      currentUser.role !== "Главный администратор" &&
+      userToEdit.role === "Главный администратор"
+    ) {
+      alert("Вы не имеете права редактировать главного администратора.");
+      return; // Прекращаем выполнение функции
+    }
 
-    document.querySelector("#firstName").value = userToEdit.firstName;
+    editMode = true; // Устанавливаем режим редактирования
+    currentUserId = userId; // Сохраняем ID текущего пользователя для редактирования
+    document.querySelector("#firstName").value = userToEdit.firstName; // Заполняем форму данными пользователя
     document.querySelector("#lastName").value = userToEdit.lastName;
     document.querySelector("#phone").value = userToEdit.phone;
     document.querySelector("#role").value = userToEdit.role;
     document.querySelector("#login").value = userToEdit.login;
 
-    overflowContainer.style.display = "block";
+    overflowContainer.style.display = "block"; // Показываем форму редактирования
     document.querySelector(".position-text").textContent =
       "Редактировать пользователя";
     document.querySelector(".add-button-ac").textContent =
@@ -262,9 +305,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#loginError").textContent = "";
     document.querySelector("#passwordError").textContent = "";
   };
-
-  const removeSpaces = function (event) {
-    this.value = this.value.replace(/\s+/g, "");
+  const removeSpaces = (event) => {
+    event.target.value = event.target.value.replace(/\s+/g, ""); // Используем event.target для доступа к элементу
   };
 
   document.querySelector("#firstName").addEventListener("input", removeSpaces);
@@ -272,13 +314,33 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#login").addEventListener("input", removeSpaces);
   document.querySelector("#password").addEventListener("input", removeSpaces);
 
-  const allowOnlyRussianLettersInFirstName = function (event) {
-    this.value = this.value.replace(/[^а-яА-ЯёЁ]/g, "");
+  const forma = document.querySelector(".add-user-form");
+
+  // Функция для преобразования первой буквы в заглавную
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
-  const allowOnlyRussianLettersInLastName = function (event) {
-    this.value = this.value.replace(/[^а-яА-ЯёЁ]/g, "");
+  // Обработчик события для имени
+  const allowOnlyRussianLettersInFirstName = (event) => {
+    let value = event.target.value.replace(/[^а-яА-ЯёЁ]/g, ""); // Разрешаем только русские буквы
+    event.target.value = capitalizeFirstLetter(value); // Преобразуем первую букву в заглавную
   };
+
+  // Обработчик события для фамилии
+  const allowOnlyRussianLettersInLastName = (event) => {
+    let value = event.target.value.replace(/[^а-яА-ЯёЁ]/g, ""); // Разрешаем только русские буквы
+    event.target.value = capitalizeFirstLetter(value); // Преобразуем первую букву в заглавную
+  };
+
+  if (forma) {
+    document
+      .querySelector("#firstName")
+      .addEventListener("input", allowOnlyRussianLettersInFirstName);
+    document
+      .querySelector("#lastName")
+      .addEventListener("input", allowOnlyRussianLettersInLastName);
+  }
 
   const validateLoginAndPassword = (login, password) => {
     if (/^[а-яА-ЯёЁ]*$/.test(login)) {
@@ -343,23 +405,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  const allowedPages = [
-    "/pages/administrator.html",
-    "/pages/administratorEdit.html",
-    "/pages/duty.html",
-    "/pages/pastdutyreport.html",
-    "/pages/managerPage.html",
-    "/pages/manageDutyReport.html",
-  ];
+  const logOutButton = document.querySelector(".log-out-button");
 
-  if (allowedPages.includes(window.location.pathname)) {
-    const logOutButton = document.querySelector(".log-out-button");
+  const createExitMenu = () => {
+    const exitMenu = document.createElement("div");
+    exitMenu.className = "owerflow-exit font-regular";
 
-    const createExitMenu = () => {
-      const exitMenu = document.createElement("div");
-      exitMenu.className = "owerflow-exit font-regular";
-
-      exitMenu.innerHTML = `
+    exitMenu.innerHTML = `
           <div class="exit-container">
               <span class="cross-exit"><img src="../icons/krest.svg" alt="cross"></span>
               <span class="exit-text">Вы действительно хотите выйти?</span>
@@ -370,38 +422,47 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
       `;
 
-      const closeButton = exitMenu.querySelector(".cross-exit");
-      const cancelButton = exitMenu.querySelector(".exit-cancellation");
-      const completeButton = exitMenu.querySelector(".exit-completed");
+    const closeButton = exitMenu.querySelector(".cross-exit");
+    const cancelButton = exitMenu.querySelector(".exit-cancellation");
+    const completeButton = exitMenu.querySelector(".exit-completed");
 
-      closeButton.addEventListener("click", () => {
-        exitMenu.remove();
-      });
-
-      cancelButton.addEventListener("click", () => {
-        exitMenu.remove();
-      });
-
-      completeButton.addEventListener("click", () => {
-        window.location.href = "../index.html";
-      });
-
-      return exitMenu;
-    };
-
-    logOutButton.addEventListener("click", () => {
-      const header = document.querySelector(".dute__header");
-      const exitMenu = createExitMenu();
-      header.appendChild(exitMenu);
+    closeButton.addEventListener("click", () => {
+      exitMenu.remove();
     });
+
+    cancelButton.addEventListener("click", () => {
+      exitMenu.remove();
+    });
+
+    completeButton.addEventListener("click", () => {
+      window.location.href = "../index.html";
+    });
+
+    return exitMenu;
+  };
+
+  logOutButton.addEventListener("click", () => {
+    const header = document.querySelector(".dute__header");
+    const exitMenu = createExitMenu();
+    header.appendChild(exitMenu);
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const logOutButton = document.querySelector(".log-out-button");
+  const userNameSpan = logOutButton.querySelector(".user-name"); // Элемент для отображения имени пользователя
+
+  // Проверка на наличие текущего пользователя
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (currentUser && userNameSpan) {
+    // Обновляем текст кнопки с именем и первой буквой фамилии пользователя
+    userNameSpan.textContent = `${
+      currentUser.firstName
+    } ${currentUser.lastName.charAt(0)}.`; // Отображаем только первую букву фамилии
   }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  // if (window.location.pathname !== "index.html") {
-  //   return;
-  // }
-
   const form = document.querySelector("#form-sign-in");
   const errorMessageElement = document.querySelector(".error-message-log"); // Элемент для вывода ошибок
 
@@ -422,6 +483,10 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       if (user) {
+        // Сохраняем текущего пользователя в локальном хранилище
+        localStorage.setItem("currentUser", JSON.stringify(user));
+
+        // Перенаправление на соответствующую страницу
         switch (user.role) {
           case "Администратор":
             window.location.href = "pages/administrator.html";
@@ -447,3 +512,57 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// Радиальный график
+// Шаг 2: Создание диаграммы
+const ctx = document.querySelector(".myPieChart").getContext("2d");
+let data = [13, 1, 2]; // Начальные данные
+
+// Создаем радиальный градиент
+const createGradient = (color) => {
+  const gradient = ctx.createRadialGradient(100, 100, 0, 110, 120, 90); // Радиальный градиент
+  gradient.addColorStop(0, "rgba(128, 128, 128, 0.5)"); // Центр (серый)
+  gradient.addColorStop(1, color); // Конечный цвет
+  return gradient;
+};
+
+const myPieChart = new Chart(ctx, {
+  type: "pie",
+  data: {
+    labels: [
+      "Число выполненых дежурств",
+      "Число пропущенных дежурств",
+      "Число замененных дежурств",
+    ],
+    datasets: [
+      {
+        label: "Мои данные",
+        data: data,
+        backgroundColor: [
+          createGradient("#77C375"), // Градиент для первого сектора
+          createGradient("#BB4141"), // Градиент для второго сектора
+          createGradient("#D05AFF"), // Градиент для третьего сектора
+        ],
+        borderWidth: 0, // Убираем границы
+      },
+    ],
+  },
+  options: {
+    responsive: true,
+    cutout: "50%", // Устанавливаем пустой центр
+    plugins: {
+      legend: {
+        display: false,
+        position: "top",
+      },
+    },
+  },
+});
+
+// Шаг 3: Функция для обновления данных
+function updateData() {
+  // Генерация новых данных
+  data = data.map((value) => Math.floor(Math.random() * 100)); // Случайные значения от 0 до 99
+  myPieChart.data.datasets[0].data = data; // Обновление данных в диаграмме
+  myPieChart.update(); // Обновление отображения диаграммы
+}
