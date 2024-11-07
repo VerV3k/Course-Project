@@ -563,7 +563,7 @@ if (
 
 if (titleTag.textContent === "График") {
   const currentDate = new Date();
-  const mainElement = document.querySelector(".main"); // Находим элемент <main> для добавления графика
+  const mainElement = document.querySelector(".main");
 
   // Функция для получения пользователей с ролью "Сотрудник"
   const getEmployees = () => {
@@ -583,28 +583,41 @@ if (titleTag.textContent === "График") {
 
     // Определяем дату через 2 дня
     const startDate = new Date(currentDate);
-    startDate.setDate(currentDate.getDate() + ((8 - currentDate.getDay()) % 7)); // Следующий понедельник
-    startDate.setDate(startDate.getDate() - 2); // За 2 дня до начала следующей недели
+    startDate.setDate(currentDate.getDate() + ((8 - currentDate.getDay()) % 7));
+    startDate.setDate(startDate.getDate() - 2);
 
     const employeeCount = employees.length;
+    const halfCount = Math.ceil(employeeCount / 2); // Находим половину сотрудников
 
-    // Генерируем расписание на следующие 8 дней с шагом в 2 дня
+    // Генерируем расписание на следующие 8 дней
     for (let i = 0; i < 8; i++) {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i);
-      const dateString = date.toISOString().split("T")[0]; // Форматируем дату в строку YYYY-MM-DD
+      const dateString = date.toISOString().split("T")[0];
 
-      // Инициализируем массив для хранения имен сотрудников
       if (!schedule[dateString]) {
         schedule[dateString] = [];
       }
 
-      // Назначаем дежурства: каждый сотрудник работает через день
-      if (employeeCount > 0) {
-        const employeeIndex = Math.floor(i / 2) % employeeCount; // Определяем индекс сотрудника
-        schedule[dateString].push({
-          name: `${employees[employeeIndex].firstName} ${employees[employeeIndex].lastName}`,
-        });
+      // Назначаем дежурства: первая смена работает в дни 1-2 и 5-6, вторая смена - в дни 3-4 и 7-8
+      if (i < 2 || (i >= 4 && i < 6)) {
+        // Первые два дня и пятый-шестой
+        for (let j = 0; j < halfCount; j++) {
+          if (j < employeeCount) {
+            schedule[dateString].push({
+              name: `${employees[j].firstName} ${employees[j].lastName}`,
+            });
+          }
+        }
+      } else {
+        // Третьи-четвертые и седьмые-восьмые дни
+        for (let j = halfCount; j < employeeCount; j++) {
+          if (j < employeeCount) {
+            schedule[dateString].push({
+              name: `${employees[j].firstName} ${employees[j].lastName}`,
+            });
+          }
+        }
       }
     }
 
@@ -613,8 +626,8 @@ if (titleTag.textContent === "График") {
 
   // Функция для генерации HTML-календаря
   const generateCalendarHTML = () => {
-    const schedule = JSON.parse(localStorage.getItem("weeklySchedule")) || {}; // Получаем расписание
-    const currentUser = getCurrentUser(); // Получаем текущего пользователя
+    const schedule = JSON.parse(localStorage.getItem("weeklySchedule")) || {};
+    const currentUser = getCurrentUser();
 
     let calendarHTML = `
         <div class="calendar-block">
