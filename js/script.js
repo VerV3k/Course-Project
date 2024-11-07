@@ -562,91 +562,150 @@ if (
 }
 
 if (titleTag.textContent === "График") {
+  const currentDate = new Date();
   const mainElement = document.querySelector(".main"); // Находим элемент <main> для добавления графика
 
-  // Функция для получения расписания из localStorage
-  const getWeeklySchedule = () => {
-    return JSON.parse(localStorage.getItem("weeklySchedule")) || {};
+  // Функция для получения пользователей с ролью "Сотрудник"
+  const getEmployees = () => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    return users.filter((user) => user.role === "Сотрудник");
   };
 
-  // Функция для генерации HTML-календаря
-  const generateCalendarHTML = () => {
-    const schedule = getWeeklySchedule(); // Получаем расписание
+  // Функция для получения текущего пользователя
+  const getCurrentUser = () => {
+    return JSON.parse(localStorage.getItem("currentUser"));
+  };
 
-    // Определяем текущую дату
-    const currentDate = new Date();
+  // Функция для генерации расписания дежурств
+  const generateDutySchedule = () => {
+    const employees = getEmployees();
+    const schedule = {};
+
     // Определяем дату через 2 дня
     const startDate = new Date(currentDate);
     startDate.setDate(currentDate.getDate() + ((8 - currentDate.getDay()) % 7)); // Следующий понедельник
     startDate.setDate(startDate.getDate() - 2); // За 2 дня до начала следующей недели
 
-    // Устанавливаем первый день отображаемого месяца
-    const firstDayOfMonth = new Date(
-      startDate.getFullYear(),
-      startDate.getMonth(),
-      1
-    );
-    const firstDayOfWeek = firstDayOfMonth.getDay(); // День недели первого числа месяца
+    const employeeCount = employees.length;
 
-    // Находим первый день отображаемого календаря (начиная с понедельника)
-    const calendarStartDate = new Date(firstDayOfMonth);
-    calendarStartDate.setDate(firstDayOfMonth.getDate() - firstDayOfWeek + 1); // Перемещаем на понедельник
-
-    let calendarHTML = `
-          <div class="calendar-block">
-              <div class="calendar font-regular">
-                  <div class="header-table font-regular">
-                      <span>дежурства на</span>
-                      <span>${startDate.toLocaleString("default", {
-                        month: "long",
-                      })}</span>
-                  </div>
-                  <div class="day">Пн</div>
-                  <div class="day">Вт</div>
-                  <div class="day">Ср</div>
-                  <div class="day">Чт</div>
-                  <div class="day">Пт</div>
-                  <div class="day">Сб</div>
-                  <div class="day">Вс</div>`;
-
-    // Заполняем календарь с понедельника до воскресенья
-    for (let i = 0; i < 35; i++) {
-      // Показываем 6 недель
-      const date = new Date(calendarStartDate);
-      date.setDate(calendarStartDate.getDate() + i);
+    // Генерируем расписание на следующие 8 дней с шагом в 2 дня
+    for (let i = 0; i < 8; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
       const dateString = date.toISOString().split("T")[0]; // Форматируем дату в строку YYYY-MM-DD
 
-      // Проверяем, принадлежит ли дата текущему месяцу
-      const isCurrentMonth = date.getMonth() === startDate.getMonth();
-      
-      // Проверяем наличие дежурств на текущую дату
-      const hasDuty = schedule[dateString] && schedule[dateString].length > 0;
-
-      calendarHTML += `<div class="date ${isCurrentMonth ? "" : "new"} ${hasDuty ? "scheduled" : ""}">${date.getDate()}`;
-      
-      if (hasDuty) {
-        const employeesOnDuty = schedule[dateString]
-          .map((emp) => emp.name)
-          .join(", ");
-        calendarHTML += `<div class="duty">${employeesOnDuty}</div>`;
+      // Инициализируем массив для хранения имен сотрудников
+      if (!schedule[dateString]) {
+        schedule[dateString] = [];
       }
-      
+
+      // Назначаем дежурства: каждый сотрудник работает через день
+      if (employeeCount > 0) {
+        const employeeIndex = Math.floor(i / 2) % employeeCount; // Определяем индекс сотрудника
+        schedule[dateString].push({
+          name: `${employees[employeeIndex].firstName} ${employees[employeeIndex].lastName}`,
+        });
+      }
+    }
+
+    localStorage.setItem("weeklySchedule", JSON.stringify(schedule)); // Сохраняем расписание в localStorage
+  };
+
+  // Функция для генерации HTML-календаря
+  const generateCalendarHTML = () => {
+    const schedule = JSON.parse(localStorage.getItem("weeklySchedule")) || {}; // Получаем расписание
+    const currentUser = getCurrentUser(); // Получаем текущего пользователя
+
+    let calendarHTML = `
+        <div class="calendar-block">
+          <div class="calendar font-regular">
+            <div class="header-table font-regular">
+              <span>дежурства на</span>
+              <span>${new Date().toLocaleString("default", {
+                month: "long",
+              })}</span>
+            </div>
+            <div class="day">Пн</div>
+            <div class="day">Вт</div>
+            <div class="day">Ср</div>
+            <div class="day">Чт</div>
+            <div class="day">Пт</div>
+            <div class="day">Сб</div>
+            <div class="day">Вс</div>
+      `;
+
+    // Устанавливаем первый день отображаемого месяца
+    const firstDayOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1
+    );
+
+    // Находим первый день отображаемого календаря (начиная с понедельника)
+    const firstDayOfWeek = firstDayOfMonth.getDay();
+    const calendarStartDate = new Date(firstDayOfMonth);
+
+    calendarStartDate.setDate(
+      firstDayOfMonth.getDate() -
+        firstDayOfWeek +
+        (firstDayOfWeek === 0 ? -6 : 1)
+    ); // Перемещаем на понедельник
+
+    // Заполняем календарь с учетом 35 дней (5 недель)
+    for (let i = 0; i < 35; i++) {
+      const date = new Date(calendarStartDate);
+      date.setDate(calendarStartDate.getDate() + i);
+      const dateString = date.toISOString().split("T")[0];
+
+      const isCurrentMonth =
+        date.getFullYear() === currentDate.getFullYear() &&
+        date.getMonth() === currentDate.getMonth();
+
+      // Показываем только даты текущего месяца
+      calendarHTML += `<div class="date ${
+        !isCurrentMonth ? "not-current-month new" : ""
+      } ${
+        schedule[dateString] &&
+        schedule[dateString].some(
+          (emp) =>
+            emp.name === `${currentUser.firstName} ${currentUser.lastName}`
+        )
+          ? "scheduled"
+          : ""
+      }">${date.getDate()}`;
+
+      if (schedule[dateString]) {
+        const userDuties = schedule[dateString].filter(
+          (emp) =>
+            emp.name === `${currentUser.firstName} ${currentUser.lastName}`
+        );
+        if (userDuties.length > 0) {
+          calendarHTML += `<div class="duty"></div>`;
+        } else {
+          calendarHTML += `<div class="duty"></div>`; // Пустой блок для дней без дежурств
+        }
+      } else {
+        calendarHTML += `<div class="duty"></div>`; // Пустой блок для дней без дежурств
+      }
+
       calendarHTML += `</div>`;
     }
 
     calendarHTML += `
+            </div>
+            <div class="button-block__with-quest">
+              <div class="button-block__in-dute ">
+                <button class="font-bold-white">Запросить изменение</button>
+                <button class="font-bold-white">Подтвердить график</button>
               </div>
-              <div class="button-block__with-quest">
-                  <div class="button-block__in-dute ">
-                                <button class="font-bold-white">Запросить изменение</button>
-                                <button class="font-bold-white">Подтвердить график</button>
-                            </div>
-                            <span class="quest"><img src="../icons/question.png" alt="вопрос"></span>
-              </div>
-          </div>`;
+              <span class="quest"><img src="../icons/question.png" alt="вопрос"></span>
+            </div>
+          </div>
+        `;
 
     return calendarHTML;
   };
 
+  generateDutySchedule(); // Генерируем расписание перед отображением календаря
   mainElement.innerHTML = generateCalendarHTML(); // Добавляем сгенерированный календарь в элемент main
 }
