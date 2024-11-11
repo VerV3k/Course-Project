@@ -580,28 +580,24 @@ if (titleTag.textContent === "График") {
   const generateDutySchedule = () => {
     const employees = getEmployees();
     const schedule = {};
-
     // Определяем дату через 2 дня
     const startDate = new Date(currentDate);
     startDate.setDate(currentDate.getDate() + ((8 - currentDate.getDay()) % 7));
     startDate.setDate(startDate.getDate() - 2);
-
     const employeeCount = employees.length;
-    const halfCount = Math.ceil(employeeCount / 2); // Находим половину сотрудников
+    const halfCount = Math.ceil(employeeCount / 2);
 
     // Генерируем расписание на следующие 8 дней
     for (let i = 0; i < 8; i++) {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i);
       const dateString = date.toISOString().split("T")[0];
-
       if (!schedule[dateString]) {
         schedule[dateString] = [];
       }
 
-      // Назначаем дежурства: первая смена работает в дни 1-2 и 5-6, вторая смена - в дни 3-4 и 7-8
+      // Назначаем дежурства
       if (i < 2 || (i >= 4 && i < 6)) {
-        // Первые два дня и пятый-шестой
         for (let j = 0; j < halfCount; j++) {
           if (j < employeeCount) {
             schedule[dateString].push({
@@ -610,7 +606,6 @@ if (titleTag.textContent === "График") {
           }
         }
       } else {
-        // Третьи-четвертые и седьмые-восьмые дни
         for (let j = halfCount; j < employeeCount; j++) {
           if (j < employeeCount) {
             schedule[dateString].push({
@@ -624,28 +619,38 @@ if (titleTag.textContent === "График") {
     localStorage.setItem("weeklySchedule", JSON.stringify(schedule)); // Сохраняем расписание в localStorage
   };
 
+  // Проверяем наличие существующего расписания
+  let existingSchedule = JSON.parse(localStorage.getItem("weeklySchedule"));
+  if (!existingSchedule) {
+    generateDutySchedule(); // Генерируем новое расписание, если его нет
+  } else {
+    // Проверяем, актуально ли существующее расписание
+    const firstDutyDate = new Date(Object.keys(existingSchedule)[0]);
+    if (firstDutyDate < currentDate) {
+      generateDutySchedule(); // Генерируем новое расписание, если первое дежурство прошло
+    }
+  }
+
   // Функция для генерации HTML-календаря
   const generateCalendarHTML = () => {
     const schedule = JSON.parse(localStorage.getItem("weeklySchedule")) || {};
     const currentUser = getCurrentUser();
-
     let calendarHTML = `
-        <div class="calendar-block">
-          <div class="calendar font-regular">
-            <div class="header-table font-regular">
-              <span>дежурства на</span>
-              <span>${new Date().toLocaleString("default", {
-                month: "long",
-              })}</span>
-            </div>
-            <div class="day">Пн</div>
-            <div class="day">Вт</div>
-            <div class="day">Ср</div>
-            <div class="day">Чт</div>
-            <div class="day">Пт</div>
-            <div class="day">Сб</div>
-            <div class="day">Вс</div>
-      `;
+          <div class="calendar-block">
+              <div class="calendar font-regular">
+                  <div class="header-table font-regular">
+                      <span>дежурства на</span>
+                      <span>${new Date().toLocaleString("default", {
+                        month: "long",
+                      })}</span>
+                  </div>
+                  <div class="day">Пн</div>
+                  <div class="day">Вт</div>
+                  <div class="day">Ср</div>
+                  <div class="day">Чт</div>
+                  <div class="day">Пт</div>
+                  <div class="day">Сб</div>
+                  <div class="day">Вс</div>`;
 
     // Устанавливаем первый день отображаемого месяца
     const firstDayOfMonth = new Date(
@@ -657,7 +662,6 @@ if (titleTag.textContent === "График") {
     // Находим первый день отображаемого календаря (начиная с понедельника)
     const firstDayOfWeek = firstDayOfMonth.getDay();
     const calendarStartDate = new Date(firstDayOfMonth);
-
     calendarStartDate.setDate(
       firstDayOfMonth.getDate() -
         firstDayOfWeek +
@@ -669,12 +673,10 @@ if (titleTag.textContent === "График") {
       const date = new Date(calendarStartDate);
       date.setDate(calendarStartDate.getDate() + i);
       const dateString = date.toISOString().split("T")[0];
-
       const isCurrentMonth =
         date.getFullYear() === currentDate.getFullYear() &&
         date.getMonth() === currentDate.getMonth();
 
-      // Показываем только даты текущего месяца
       calendarHTML += `<div class="date ${
         !isCurrentMonth ? "not-current-month new" : ""
       } ${
@@ -688,15 +690,7 @@ if (titleTag.textContent === "График") {
       }">${date.getDate()}`;
 
       if (schedule[dateString]) {
-        const userDuties = schedule[dateString].filter(
-          (emp) =>
-            emp.name === `${currentUser.firstName} ${currentUser.lastName}`
-        );
-        if (userDuties.length > 0) {
-          calendarHTML += `<div class="duty"></div>`;
-        } else {
-          calendarHTML += `<div class="duty"></div>`; // Пустой блок для дней без дежурств
-        }
+        calendarHTML += `<div class="duty"></div>`;
       } else {
         calendarHTML += `<div class="duty"></div>`; // Пустой блок для дней без дежурств
       }
@@ -705,20 +699,157 @@ if (titleTag.textContent === "График") {
     }
 
     calendarHTML += `
-            </div>
-            <div class="button-block__with-quest">
-              <div class="button-block__in-dute ">
-                <button class="font-bold-white">Запросить изменение</button>
-                <button class="font-bold-white">Подтвердить график</button>
               </div>
-              <span class="quest"><img src="../icons/question.png" alt="вопрос"></span>
-            </div>
-          </div>
-        `;
+              <div class="button-block__with-quest-defolt">
+                  <div class="button-block__in-dute-defolt ">
+                      <button class="font-bold-white edit-btn">Запросить изменение</button>
+                  </div>
+                  <span class="quest"><img src="../icons/question.png" alt="вопрос"></span>
+              </div>
+              <div class="new-button-block" style="display: none;">
+                  <div class="button-block__in-dute">
+                      <button class="font-bold-white cancel-btn">Отменить изменение</button>
+                      <button class="font-bold-white submit-btn">Отправить изменение</button>
+                  </div>
+              </div>
+          </div>`;
 
     return calendarHTML;
   };
 
-  generateDutySchedule(); // Генерируем расписание перед отображением календаря
   mainElement.innerHTML = generateCalendarHTML(); // Добавляем сгенерированный календарь в элемент main
+
+  // Обновляем классы только для дней с классом scheduled
+  const scheduledRows = document.querySelectorAll(".calendar .date.scheduled");
+  scheduledRows.forEach((row) => {
+    row.addEventListener("click", () => {
+      row.classList.remove("scheduled"); // Удаляем класс scheduled
+      row.classList.add("replaced"); // Добавляем класс replaced
+    });
+
+    const dutyDayText = row.innerText.trim(); // Получаем текстовую дату из элемента
+    const dutyDayNumber = parseInt(dutyDayText, 10); // Преобразуем текст в число
+
+    let dutyMonth;
+    let dutyYear;
+
+    if (row.classList.contains("not-current-month")) {
+      dutyMonth = currentDate.getMonth();
+      dutyYear = currentDate.getFullYear();
+    } else {
+      dutyMonth = currentDate.getMonth() + 1;
+      dutyYear = currentDate.getFullYear();
+    }
+
+    let formattedDutyDate;
+
+    if (dutyDayNumber < 10) {
+      formattedDutyDate = `${dutyYear}-${dutyMonth
+        .toString()
+        .padStart(2, "0")}-${dutyDayNumber.toString().padStart(2, "0")}`;
+    } else {
+      formattedDutyDate = `${dutyYear}-${dutyMonth
+        .toString()
+        .padStart(2, "0")}-${dutyDayNumber}`;
+    }
+
+    if (formattedDutyDate === currentDate.toISOString().split("T")[0]) {
+      row.classList.remove("scheduled");
+      row.classList.add("current");
+    } else if (new Date(formattedDutyDate) < currentDate) {
+      row.classList.remove("scheduled");
+      row.classList.add("completed");
+    }
+  });
+
+  // Добавляем обработчик событий для кнопки "Запросить изменение"
+  const editButton = document.querySelector(".edit-btn");
+  const newButtonBlock = document.querySelector(".new-button-block");
+
+  if (editButton) {
+    editButton.addEventListener("click", () => {
+      editButton.parentElement.parentElement.style.display = "none";
+      newButtonBlock.style.display = "flex";
+
+      // Обновление класса для выбранных дат
+      selectedScheduledDates.length = 0;
+      selectedDateDates.length = 0;
+
+      scheduledRows.forEach((row) => {
+        row.addEventListener("click", () => {
+          const dateText = row.innerText.trim();
+          const selectedScheduledDate = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            dateText
+          );
+
+          if (selectedScheduledDate >= currentDate) {
+            if (!row.classList.contains("replaced")) {
+              row.classList.toggle("scheduled");
+              selectedScheduledDates.push(selectedScheduledDate);
+            } else {
+              row.classList.remove("scheduled");
+              selectedScheduledDates.splice(
+                selectedScheduledDates.indexOf(selectedScheduledDate),
+                1
+              );
+            }
+          } else {
+            alert("Нельзя выбрать прошедшую дату.");
+          }
+        });
+      });
+
+      const dateRows = document.querySelectorAll(
+        ".calendar .date:not(.scheduled)"
+      );
+
+      dateRows.forEach((row) => {
+        row.addEventListener("click", () => {
+          const dateText = row.innerText.trim();
+          const selectedNormalDate = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            dateText
+          );
+
+          if (selectedNormalDate >= currentDate) {
+            row.classList.toggle("selected-date");
+
+            if (row.classList.contains("selected-date")) {
+              selectedDateDates.push(selectedNormalDate);
+            } else {
+              selectedDateDates.splice(
+                selectedDateDates.indexOf(selectedNormalDate),
+                1
+              );
+            }
+          } else {
+            alert("Нельзя выбрать прошедшую дату.");
+          }
+        });
+      });
+
+      submitButton.addEventListener("click", () => {
+        alert(
+          `Выбранные даты: ${selectedScheduledDates
+            .map((date) => date.toISOString().split("T")[0])
+            .join(", ")} и ${selectedDateDates
+            .map((date) => date.toISOString().split("T")[0])
+            .join(", ")}`
+        );
+      });
+    });
+  }
+
+  // Обработчики событий для кнопок отмены и отправки изменений
+  const cancelButton = document.querySelector(".cancel-btn");
+
+  if (cancelButton) {
+    cancelButton.addEventListener("click", () => {
+      newButtonBlock.style.display = "none";
+      editButton.parentElement.parentElement.style.display = "flex";
+    });
+  }
 }
