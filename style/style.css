@@ -403,9 +403,7 @@ body {
     padding: 26px 0px 26px 0px;
 }
 
-.new {
-    color: #9D9D9D;
-}
+
 
 .date:hover {
     background-color: #ffffff;
@@ -477,9 +475,12 @@ body {
     background-size: 45px 45px;
 }
 
+.empty {
+    color: #9D9D9D;
+}
 
 
-.scheduled {
+.future {
     background-image: url('../icons/EllipseYellow.png');
     background-position: center;
     background-size: cover;
@@ -1160,7 +1161,7 @@ body {
 
 @media (max-width: 1397px) {
     .main {
-        padding-left: 3vw;
+        padding-left: 5vw;
     }
 
     .exit-container {
