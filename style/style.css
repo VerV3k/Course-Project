@@ -443,7 +443,7 @@ body {
     cursor: pointer;
 }
 
-.button-block__in-dute-defolt button{
+.button-block__in-dute-defolt button {
     width: 254px;
     height: 47px;
     border-radius: 13px;
@@ -513,6 +513,23 @@ body {
     background-repeat: no-repeat;
     background-size: 45px 45px;
 }
+
+.wait_start_date {
+    background-image: url('../icons/WaitStartDate.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-size: 45px 45px;
+}
+
+.wait_end_date {
+    background-image: url('../icons/WaitEndDate.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-size: 45px 45px;
+}
+
 
 .replaced-duty__dabl {
     padding: 10px 12px;
@@ -787,6 +804,31 @@ body {
     cursor: pointer;
 }
 
+.notif-edit {
+    display: flex;
+    flex-direction: column;
+    background-color: #3A5664;
+    padding: 20px;
+    right: -350px;
+    top: 58%;
+    position: fixed;
+    width: 287px;
+    border-radius: 5px 0px 0px 5px;
+    gap: 20px;
+    transition: right 0.5s ease;
+}
+
+.cross-edit {
+    margin: 0 auto;
+    margin-right: 3%;
+    cursor: pointer;
+}
+
+.notif-edit.show {
+    display: flex; 
+    right: 0px;
+}
+
 .cross {
     margin: 0 auto;
     margin-right: 3%;
@@ -811,7 +853,9 @@ body {
     cursor: pointer;
 }
 
-
+.cursor-pointer {
+    cursor: pointer;
+}
 
 .owerflow {
     display: none;
@@ -1189,12 +1233,26 @@ body {
         gap: 100px;
     }
 
+    .new-button-block {
+        display: flex;
+        flex-direction: row;
+    }
 
 }
 
 @media (max-width: 1200px) {
     .main {
         padding-left: 8%;
+    }
+
+    .new-button-block {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .in_button-block {
+        margin: 0 auto;
+
     }
 
     .exit-container {
@@ -1252,7 +1310,8 @@ body {
         padding-left: 0%;
 
     }
-    .exit-container{
+
+    .exit-container {
         left: calc(50vw - 18vw);
         top: 40%;
         /* transition: left 0.1s; */
@@ -1356,7 +1415,7 @@ body {
 }
 
 @media (max-width: 831px) {
-    .exit-container{
+    .exit-container {
         left: calc(50vw - 23vw);
         top: 40%;
         /* transition: left 0.1s; */
@@ -1383,7 +1442,7 @@ body {
 }
 
 @media (max-width: 766px) {
-    .exit-container{
+    .exit-container {
         left: calc(50vw - 27vw);
         top: 40%;
         /* transition: left 0.1s; */
@@ -1449,7 +1508,7 @@ body {
         margin-left: 60px;
     }
 
-    .exit-container{
+    .exit-container {
         left: calc(50vw - 32vw);
         top: 40%;
         /* transition: left 0.1s; */
@@ -1464,7 +1523,7 @@ body {
     }
 
     .quest {
-        margin-left: 0px;
+        /* margin-left: 0px; */
         padding-top: 0px;
     }
 
@@ -1634,7 +1693,7 @@ body {
         align-items: center;
     }
 
-    .exit-container{
+    .exit-container {
         left: calc(50vw - 37vw);
         top: 40%;
         /* transition: left 0.1s; */
@@ -1659,7 +1718,7 @@ body {
 }
 
 @media (max-width: 462px) {
-    
+
     .main-page__logo-blockh {
         margin-left: -25%;
     }
@@ -1673,7 +1732,7 @@ body {
     }
 
 
-    .exit-container{
+    .exit-container {
         left: calc(50vw - 43vw);
         top: 40%;
         /* transition: left 0.1s; */
@@ -1703,9 +1762,10 @@ body {
         gap: none;
     }
 }
+
 @media (max-width: 462px) {
 
-    .exit-container{
+    .exit-container {
         left: calc(50vw - 47vw);
         top: 40%;
         /* transition: left 0.1s; */

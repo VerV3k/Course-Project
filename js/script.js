@@ -531,7 +531,7 @@ if (
     type: "pie",
     data: {
       labels: [
-        "Число выполненых дежурств",
+        "Число выполненных дежурств",
         "Число пропущенных дежурств",
         "Число замененных дежурств",
       ],
@@ -568,7 +568,6 @@ if (titleTag.textContent === "График") {
     const month = today.getMonth();
 
     const monthName = today.toLocaleString("ru-RU", { month: "long" });
-
     const monthElement = document.querySelector(".month");
     monthElement.textContent = monthName;
 
@@ -577,7 +576,6 @@ if (titleTag.textContent === "График") {
     const dayOffset = startDayIndex === 0 ? 6 : startDayIndex - 1;
 
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-
     const daysInPreviousMonth = new Date(year, month, 0).getDate();
 
     const dateElements = document.querySelectorAll(".calendar .date");
@@ -606,20 +604,28 @@ if (titleTag.textContent === "График") {
       const storedUsers = getStoredUsers();
       const schedules = JSON.parse(localStorage.getItem("schedules")) || {};
 
+      if (!schedules[year]) {
+        schedules[year] = {};
+      }
+      if (!schedules[year][month]) {
+        schedules[year][month] = {};
+      }
+
       const halfSize = Math.ceil(storedUsers.length / 2);
       const group1 = storedUsers.slice(0, halfSize);
       const group2 = storedUsers.slice(halfSize);
 
       for (let day = 1; day <= daysInMonth; day++) {
-        const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(
-          day
-        ).padStart(2, "0")}`;
+        const dateKey = `${String(year).padStart(4, "0")}-${String(
+          month + 1
+        ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-        if (!schedules[dateKey]) {
-          schedules[dateKey] = { user: {} };
+        if (!schedules[year][month][dateKey]) {
+          schedules[year][month][dateKey] = { user: {} };
         }
 
         const scheduleDate = new Date(year, month, day);
+
         let assignedGroup;
 
         if ((day - 1) % 4 < 2) {
@@ -629,43 +635,135 @@ if (titleTag.textContent === "График") {
         }
 
         assignedGroup.forEach((user) => {
+          let userStatus;
+          const currentHourMSK = today.getUTCHours() + 3; 
+
           if (scheduleDate.toDateString() === today.toDateString()) {
-            schedules[dateKey].user[user.id] = { note: [], status: "текущее" };
+            if (currentHourMSK >= 8 && currentHourMSK < 20) {
+
+              userStatus = {
+                note: ["дежурство проходит без инцидентов"],
+                status: "текущее",
+              };
+            } else if (currentHourMSK === 20 && today.getMinutes() >= 1) {
+              // После 20:01
+              userStatus = {
+                note: ["дежурство прошло без инцидентов"],
+                status: "выполненное",
+              };
+            } else {
+              userStatus = { note: [], status: "будущее" };
+            }
           } else if (scheduleDate < today) {
-            schedules[dateKey].user[user.id] = {
-              note: [],
+            userStatus = {
+              note: ["дежурство прошло без инцидентов"],
               status: "выполненное",
             };
           } else {
-            schedules[dateKey].user[user.id] = { note: [], status: "будущее" };
+            userStatus = { note: [], status: "будущее" };
           }
+
+          schedules[year][month][dateKey].user[user.id] = userStatus;
         });
       }
 
       localStorage.setItem("schedules", JSON.stringify(schedules));
-
-      updateCalendarClasses(schedules);
     };
 
-    const updateCalendarClasses = (schedules) => {
-      for (let day in schedules) {
-        const users = schedules[day].user;
-        const dateElementIndex = new Date(day).getDate() + dayOffset - 1;
+    assignUsersToWork();
 
-        if (dateElements[dateElementIndex]) {
-          Object.values(users).forEach((user) => {
-            if (user.status === "текущее") {
-              dateElements[dateElementIndex].classList.add("current");
-            } else if (user.status === "выполненное") {
-              dateElements[dateElementIndex].classList.add("completed");
-            } else if (user.status === "будущее") {
-              dateElements[dateElementIndex].classList.add("future");
+    const highlightUserStatusInCalendar = () => {
+      const currentUserStr = localStorage.getItem("currentUser");
+      if (!currentUserStr) return;
+
+      const currentUser = JSON.parse(currentUserStr);
+      const currentUserId = currentUser.id;
+
+      if (!currentUserId) return;
+
+      const schedules = JSON.parse(localStorage.getItem("schedules")) || {};
+
+      if (!schedules[year] || !schedules[year][month]) return;
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateKey = `${String(year).padStart(4, "0")}-${String(
+          month + 1
+        ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+        if (schedules[year][month][dateKey]) {
+          const userSchedule =
+            schedules[year][month][dateKey].user[currentUserId];
+
+          if (userSchedule) {
+            const dateElementIndex = day + dayOffset - 1;
+
+            if (dateElements[dateElementIndex]) {
+              switch (userSchedule.status) {
+                case "текущее":
+                  dateElements[dateElementIndex].classList.add("current");
+                  console.log(`Добавлен класс 'current' для ${dateKey}`);
+                  break;
+                case "выполненное":
+                  dateElements[dateElementIndex].classList.add("completed");
+                  console.log(`Добавлен класс 'completed' для ${dateKey}`);
+                  break;
+                case "будущее":
+                  dateElements[dateElementIndex].classList.add("future");
+                  console.log(`Добавлен класс 'future' для ${dateKey}`);
+                  break;
+              }
             }
-          });
+          }
         }
       }
     };
 
-    assignUsersToWork();
+    highlightUserStatusInCalendar();
+
+
+    const editButtonBlockDefault = document.querySelector(
+      ".button-block__with-quest-defolt"
+    );
+    const newButtonBlock = document.querySelector(".new-button-block");
+
+    document.querySelector(".edit-btn").addEventListener("click", () => {
+      editButtonBlockDefault.style.display = "none";
+      newButtonBlock.style.display = "flex";
+
+
+      const notificationBlock = document.querySelector(".notif-edit");
+
+      notificationBlock.classList.add("show");
+      notificationBlock.style.display = "flex";
+
+      setTimeout(() => {
+        notificationBlock.classList.remove("show");
+        setTimeout(() => {
+          notificationBlock.style.display = "none";
+        }, 500);
+      }, 3000);
+    });
+
+    document.querySelector(".cancel-btn").addEventListener("click", () => {
+      editButtonBlockDefault.style.display = "flex";
+      newButtonBlock.style.display = "none";
+
+      const notificationBlock = document.querySelector(".notif-edit");
+      notificationBlock.classList.remove("show");
+      setTimeout(() => {
+        notificationBlock.style.display = "none";
+      }, 500);
+    });
+
+
+    let selectedDates = [];
+
+    document.querySelector(".submit-btn").addEventListener("click", () => {
+
+
+      localStorage.setItem("notConfirmed", JSON.stringify(selectedDates));
+
+
+    });
   });
 }
