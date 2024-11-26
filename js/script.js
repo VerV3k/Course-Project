@@ -565,18 +565,17 @@ if (titleTag.textContent === "График") {
   document.addEventListener("DOMContentLoaded", () => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = today.getMonth();
-
+    const month = today.getMonth() + 1;
     const monthName = today.toLocaleString("ru-RU", { month: "long" });
     const monthElement = document.querySelector(".month");
     monthElement.textContent = monthName;
 
-    const firstDayOfMonth = new Date(year, month, 1);
+    const firstDayOfMonth = new Date(year, month - 1, 1);
     const startDayIndex = firstDayOfMonth.getDay();
     const dayOffset = startDayIndex === 0 ? 6 : startDayIndex - 1;
 
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const daysInPreviousMonth = new Date(year, month, 0).getDate();
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const daysInPreviousMonth = new Date(year, month - 1, 0).getDate();
 
     const dateElements = document.querySelectorAll(".calendar .date");
     let dateCounter = 1;
@@ -617,14 +616,14 @@ if (titleTag.textContent === "График") {
 
       for (let day = 1; day <= daysInMonth; day++) {
         const dateKey = `${String(year).padStart(4, "0")}-${String(
-          month + 1
+          month
         ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
         if (!schedules[year][month][dateKey]) {
           schedules[year][month][dateKey] = { user: {} };
         }
 
-        const scheduleDate = new Date(year, month, day);
+        const scheduleDate = new Date(year, month - 1, day);
 
         let assignedGroup;
 
@@ -636,11 +635,11 @@ if (titleTag.textContent === "График") {
 
         assignedGroup.forEach((user) => {
           let userStatus;
-          const currentHourMSK = today.getUTCHours() + 3; 
+          const currentHourMSK = today.getUTCHours() + 3;
 
           if (scheduleDate.toDateString() === today.toDateString()) {
             if (currentHourMSK >= 8 && currentHourMSK < 20) {
-
+              // С 8:00 до 20:00
               userStatus = {
                 note: ["дежурство проходит без инцидентов"],
                 status: "текущее",
@@ -687,7 +686,7 @@ if (titleTag.textContent === "График") {
 
       for (let day = 1; day <= daysInMonth; day++) {
         const dateKey = `${String(year).padStart(4, "0")}-${String(
-          month + 1
+          month
         ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
         if (schedules[year][month][dateKey]) {
@@ -720,7 +719,6 @@ if (titleTag.textContent === "График") {
 
     highlightUserStatusInCalendar();
 
-
     const editButtonBlockDefault = document.querySelector(
       ".button-block__with-quest-defolt"
     );
@@ -730,7 +728,7 @@ if (titleTag.textContent === "График") {
       editButtonBlockDefault.style.display = "none";
       newButtonBlock.style.display = "flex";
 
-
+      // Показываем уведомление с анимацией
       const notificationBlock = document.querySelector(".notif-edit");
 
       notificationBlock.classList.add("show");
@@ -751,19 +749,58 @@ if (titleTag.textContent === "График") {
       const notificationBlock = document.querySelector(".notif-edit");
       notificationBlock.classList.remove("show");
       setTimeout(() => {
-        notificationBlock.style.display = "none";
+        notificationBlock.style.display = "flex";
       }, 500);
     });
 
-
     let selectedDates = [];
 
+    document.querySelectorAll(".calendar .date").forEach((dateElement) => {
+      dateElement.addEventListener("click", () => {
+        if (
+          selectedDates.length < 2 &&
+          !selectedDates.includes(dateElement.textContent)
+        ) {
+          selectedDates.push(dateElement.textContent);
+          dateElement.classList.add("selected");
+          if (selectedDates.length === 2) {
+            alert(`Выбраны даты: ${selectedDates.join(", ")}`);
+          }
+        } else if (selectedDates.includes(dateElement.textContent)) {
+          selectedDates.splice(
+            selectedDates.indexOf(dateElement.textContent),
+            1
+          );
+          dateElement.classList.remove("selected");
+        }
+      });
+    });
+
     document.querySelector(".submit-btn").addEventListener("click", () => {
+      const currentUserStr = localStorage.getItem("currentUser");
 
+      if (currentUserStr) {
+        const currentUserId = JSON.parse(currentUserStr).id;
 
-      localStorage.setItem("notConfirmed", JSON.stringify(selectedDates));
+        const notConfirmedData =
+          JSON.parse(localStorage.getItem("notConfirmed")) || {};
 
+        const requestTimestamp = new Date().toLocaleString();
 
+        notConfirmedData[requestTimestamp] = {
+          [currentUserId]: {
+            firstDay: `${selectedDates[0]}.${month}.${year}`,
+            secondDay: `${selectedDates[1]}.${month}.${year}`,
+            requestStatus: "Ожидание",
+          },
+        };
+
+        localStorage.setItem("notConfirmed", JSON.stringify(notConfirmedData));
+
+        alert(`Запрос отправлен на замены дат: ${selectedDates.join(", ")}`);
+
+        selectedDates.length = 0;
+      }
     });
   });
 }
