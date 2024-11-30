@@ -467,6 +467,11 @@ body {
     cursor: pointer
 }
 
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
 .completed {
     background-image: url('../icons/EllipseGreen.png');
     background-position: center;
@@ -479,6 +484,9 @@ body {
     color: #9D9D9D;
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
 
 .future {
     background-image: url('../icons/EllipseYellow.png');
@@ -486,6 +494,7 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-size: 45px 45px;
+    
 }
 
 .current {
@@ -529,6 +538,24 @@ body {
     background-repeat: no-repeat;
     background-size: 45px 45px;
 }
+
+
+.wait_start_date-local {
+    background-image: url('../icons/WaitStartDate.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-size: 45px 45px;
+}
+
+.wait_end_date-local {
+    background-image: url('../icons/WaitEndDate.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-size: 45px 45px;
+}
+
 
 
 .replaced-duty__dabl {
@@ -853,9 +880,7 @@ body {
     cursor: pointer;
 }
 
-.cursor-pointer {
-    cursor: pointer;
-}
+
 
 .owerflow {
     display: none;
@@ -883,7 +908,7 @@ body {
 
 .error-message-log {
     margin-top: -30px;
-    color: #7f2020;
+    color: #d51313;
     width: 250px;
     padding-bottom: 20px;
 }
